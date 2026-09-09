@@ -46,10 +46,11 @@ Hoje, quem quer comprar um reboque só descobre o que a loja tem disponível ind
 
 | # | Funcionalidade | Essencial? | Quem faz |
 |---|---|---|---|
-| F1 |  |  | Joao Pedro |
-| F2 | |  | Joao Pietro |
-| F3 |     |  | Pedro Henrique |
-| F4 |     |  | Samuel Verissimo |
+| F1 |Catálogo de reboques  | sim |   |
+| F2 | | Página de detalhes do reboque |   |
+| F3 |   Contato com o dono da loja  |  |   |
+| F4 |   Página inicial  |  |   |
+| F5 |Página “Sobre a loja”|  |   |
 
 ---
 
