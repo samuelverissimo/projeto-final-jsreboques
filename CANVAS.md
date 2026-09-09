@@ -46,10 +46,10 @@ Hoje, quem quer comprar um reboque só descobre o que a loja tem disponível ind
 
 | # | Funcionalidade | Essencial? | Quem faz |
 |---|---|---|---|
-| F1 | Listar reboques disponíveis | Sim | Joao Pedro |
-| F2 | Ver detalhes de um reboque | Sim | Joao Pietro |
-| F3 | Cadastrar solicitação de orçamento | Sim | Pedro Henrique |
-| F4 | Excluir solicitação de orçamento | Não | Samuel Verissimo |
+| F1 |  |  | Joao Pedro |
+| F2 | |  | Joao Pietro |
+| F3 |     |  | Pedro Henrique |
+| F4 |     |  | Samuel Verissimo |
 
 ---
 
