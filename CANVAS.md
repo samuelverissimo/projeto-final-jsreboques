@@ -89,10 +89,10 @@ Hoje, quem quer comprar um reboque só descobre o que a loja tem disponível ind
 
 | Integrante | Papel | Responsável por |
 |---|---|---|
-| Joao Pedro | Dev / telas | Tela principal e catálogo |
-| Joao Pietro | Dev / dados | Banco de dados com Room |
-| Pedro Henrique | Design e identidade | Cores, imagens, ícone |
-| Samuel Verissimo | Documentação, build e entrega | README, testes, APK |
+| Joao Pedro |    | Tela principal e catálogo |
+| Joao Pietro |    | Banco de dados com Room |
+| Pedro Henrique |    | Cores, imagens, ícone |
+| Samuel Verissimo |  | README, testes, APK |
 
 **Riscos:**
 
