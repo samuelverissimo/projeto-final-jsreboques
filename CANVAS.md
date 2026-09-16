@@ -115,19 +115,7 @@ O grupo segue os combinados padrão do curso (revisar antes de aceitar, comentá
 
 ---
 
-## 🗓️ Bloco 11 — Marcos até 10/12
 
-| Marco | Prazo |
-|---|---|
-| M1 — Canvas + repositório | 16/09 |
-| M2 — PRD aprovado + telas | 30/09 |
-| M3 — Funcionalidade base | 21/10 |
-| M4 — Dados e erros tratados | 11/11 |
-| M5 — Identidade + `.apk` testado | 25/11 |
-| M6 — `.aab` + loja + `README.md` | 02/12 |
-| **Entrega e apresentação** | **10/12** |
-
----
 
 ## 🏁 Bloco 12 — Definição de pronto
 
