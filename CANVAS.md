@@ -1,4 +1,4 @@
-# 🎯 Canvas do Projeto Final — App Android
+#  Canvas do Projeto Final — App Android
 
 | | |
 |---|---|
@@ -11,7 +11,7 @@
 
 ---
 
-## 🧩 Bloco 1 — Nome e pitch do app
+##  Bloco 1 — Nome e pitch do app
 
 **Nome do app:** JS Reboques
 
@@ -20,13 +20,13 @@
 
 ---
 
-## 😖 Bloco 2 — Problema
+##  Bloco 2 — Problema
 
 Hoje, quem quer comprar um reboque só descobre o que a loja tem disponível indo até lá pessoalmente ou entrando em contato direto com um vendedor — não dá pra comparar modelos, preços e características antes disso. O app resolve isso deixando o catálogo acessível na mão do cliente.
 
 ---
 
-## 👥 Bloco 3 — Público-alvo
+##  Bloco 3 — Público-alvo
 
 - **Perfil principal:** pessoas maiores de idade, empresas e profissionais que precisam de um reboque para transporte de carga ou equipamentos.
 - **Quando/onde usam:** na hora de pesquisar e comparar opções antes de decidir a compra.
@@ -34,7 +34,7 @@ Hoje, quem quer comprar um reboque só descobre o que a loja tem disponível ind
 
 ---
 
-## 💡 Bloco 4 — Solução em uma tela
+##  Bloco 4 — Solução em uma tela
 
 - **A tela principal lista:** os reboques disponíveis, com nome, imagem e preço.
 - **A ação principal:** tocar num reboque para ver os detalhes.
@@ -42,7 +42,7 @@ Hoje, quem quer comprar um reboque só descobre o que a loja tem disponível ind
 
 ---
 
-## ✅ Bloco 5 — Funcionalidades do MVP
+##  Bloco 5 — Funcionalidades do MVP
 
 | # | Funcionalidade | Essencial? | Quem faz |
 |---|---|---|---|
@@ -54,7 +54,7 @@ Hoje, quem quer comprar um reboque só descobre o que a loja tem disponível ind
 
 ---
 
-## 🚫 Bloco 6 — Fora do escopo
+##  Bloco 6 — Fora do escopo
 
 - ❌ Pagamento pelo app
 - ❌ Entrega do reboque pelo app
@@ -62,7 +62,7 @@ Hoje, quem quer comprar um reboque só descobre o que a loja tem disponível ind
 
 ---
 
-## ⚙️ Bloco 7 — Caminho técnico
+##  Bloco 7 — Caminho técnico
 
 - [x] **Opção A — Room:** reboques e solicitações salvos no próprio celular.
 
@@ -74,7 +74,7 @@ Hoje, quem quer comprar um reboque só descobre o que a loja tem disponível ind
 
 ---
 
-## 🎨 Bloco 8 — Identidade visual
+##  Bloco 8 — Identidade visual
 
 | Item | Definição |
 |---|---|
@@ -86,7 +86,7 @@ Hoje, quem quer comprar um reboque só descobre o que a loja tem disponível ind
 
 ---
 
-## 👤 Bloco 9 — Equipe, papéis e riscos
+##  Bloco 9 — Equipe, papéis e riscos
 
 | Integrante | Papel | Responsável por |
 |---|---|---|
@@ -104,7 +104,7 @@ Hoje, quem quer comprar um reboque só descobre o que a loja tem disponível ind
 
 ---
 
-## 🤖 Bloco 10 — Acordo de trabalho com IA
+##  Bloco 10 — Acordo de trabalho com IA
 
 **Regras para o `AGENTS.md`:**
 1. A IA segue as funcionalidades definidas no Canvas e no PRD.
@@ -117,7 +117,7 @@ O grupo segue os combinados padrão do curso (revisar antes de aceitar, comentá
 
 
 
-## 🏁 Bloco 12 — Definição de pronto
+##  Bloco 12 — Definição de pronto
 
 - [ ] A tela principal mostra os reboques cadastrados no banco.
 - [ ] O usuário consegue abrir um reboque e ver seus detalhes.
@@ -130,7 +130,7 @@ O grupo segue os combinados padrão do curso (revisar antes de aceitar, comentá
 
 ---
 
-## ✍️ Validação do professor
+##  Validação do professor
 
 | | |
 |---|---|
