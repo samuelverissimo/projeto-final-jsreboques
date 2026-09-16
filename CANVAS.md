@@ -80,8 +80,8 @@ Hoje, quem quer comprar um reboque só descobre o que a loja tem disponível ind
 | Item | Definição |
 |---|---|
 | Nome exibido (`strings.xml`) | Reboque Fácil |
-| Cor principal | `#FF9800` |
-| Cores complementares |       |
+| Cor principal | `##213d5e (Azul Escuro)` |
+| Cores complementares | `#bedeff (Azul Claro)` |
 | Ícone (512×512) | Reboque visto de lado, remetendo aos produtos da loja |
 | `applicationId` | `br.edu.ifpe.jsreboques` |
 | Versão inicial | `1.0` (versionCode `1`) |
@@ -119,7 +119,7 @@ O grupo segue os combinados padrão do curso (revisar antes de aceitar, comentá
 
 
 
-##  Bloco 12 — Definição de pronto
+##  Bloco 11 — Definição de pronto
 
 - [ ] A tela principal mostra os reboques cadastrados no banco.
 - [ ] O usuário consegue abrir um reboque e ver seus detalhes.
