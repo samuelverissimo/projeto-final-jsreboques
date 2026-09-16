@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Grupo nº** | _4__ |
+| **Grupo** | MaineProg |
 | **Integrantes** | Joao Pedro, Joao Pietro, Pedro Henrique e Samuel Verissimo |
 | **Turma** | 3º ano — Ensino Médio |
 | **Repositório** | `https://github.com/samuelverissimo/projeto-final-jsreboques` |
