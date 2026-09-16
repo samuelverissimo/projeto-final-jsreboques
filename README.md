@@ -5,3 +5,39 @@ Projeto final da matéria de Desenvolvimento para Dispositivos Móveis, ministra
 Projeto desenvolvido pela equipe MaineProg, composto pelos integrantes: Samuel Veríssimo, Pedro Henrique, João Pedro e João Pietro.
 
 Postulantes na turma B do 3º ano do ensimo médio.
+
+
+
+
+
+
+
+GESTOR REBOQUE 
+	REBOQUE	
+		NOME
+		VALOR COMPRA
+		VALOR VENDA
+		CATEGORIA
+		MODELO
+		MARCA
+
+ESTOQUE
+	REBOQUE AIJDSJ - QTD
+	
+REGISTRO VENDA
+	REBOQUE
+	DATA
+	CLIENTE
+	(-n ESTOQUE)
+
+COMPRA
+
+	
+USUARIO ADM
+
+
+CLIENTE
+	NOME 
+	EMAIL
+	WHATSAPP
+	
