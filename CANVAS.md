@@ -90,7 +90,7 @@ Hoje, quem quer comprar um reboque só descobre o que a loja tem disponível ind
 ##  Bloco 9 — Equipe, papéis e riscos
 
 | Integrante | Responsável por |
-|---|---|---|
+|---|---|
 | Joao Pedro | Tela principal e catálogo |
 | Joao Pietro | Banco de dados com Room |
 | Pedro Henrique | Cores, imagens, ícone |
