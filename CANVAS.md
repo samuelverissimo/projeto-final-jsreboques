@@ -81,6 +81,7 @@ Hoje, quem quer comprar um reboque só descobre o que a loja tem disponível ind
 |---|---|
 | Nome exibido (`strings.xml`) | Reboque Fácil |
 | Cor principal | `#FF9800` |
+| Cores complementares |       |
 | Ícone (512×512) | Reboque visto de lado, remetendo aos produtos da loja |
 | `applicationId` | `br.edu.ifpe.jsreboques` |
 | Versão inicial | `1.0` (versionCode `1`) |
