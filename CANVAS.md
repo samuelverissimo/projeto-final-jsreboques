@@ -80,7 +80,7 @@ Hoje, quem quer comprar um reboque só descobre o que a loja tem disponível ind
 | Item | Definição |
 |---|---|
 | Nome exibido (`strings.xml`) | Reboque Fácil |
-| Cor principal | `##213d5e (Azul Escuro)` |
+| Cor principal | `#213d5e (Azul Escuro)` |
 | Cores complementares | `#bedeff (Azul Claro)` |
 | Ícone (512×512) | Reboque visto de lado, remetendo aos produtos da loja |
 | `applicationId` | `br.edu.ifpe.jsreboques` |
