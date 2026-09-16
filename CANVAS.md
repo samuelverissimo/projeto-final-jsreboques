@@ -46,11 +46,12 @@ Hoje, quem quer comprar um reboque só descobre o que a loja tem disponível ind
 
 | # | Funcionalidade | Essencial? | Quem faz |
 |---|---|---|---|
-| F1 |Catálogo de reboques  | sim |   |
-| F2 |  Página de detalhes do reboque |   ||
-| F3 |   Contato com o dono da loja  |  |   |
-| F4 |   Página inicial  |  |   |
-| F5 |Página “Sobre a loja”|  |   |
+| F1 |  Catálogo de reboques  | Sim | Samuel e João Pedro |
+| F2 |  Página de detalhes do reboque  | Não | Samuel e Pedro |
+| F3 |  Contato com o dono da loja  | Sim | Samuel e Pietro |
+| F4 |  Página inicial  | Sim | João Pedro e Pietro |
+| F5 |  Página “Sobre a loja”  | Não | João Pedro e Pedro |
+| F6 |  Página de Feedback  | Não | Pedro e Pietro |
 
 ---
 
@@ -88,12 +89,12 @@ Hoje, quem quer comprar um reboque só descobre o que a loja tem disponível ind
 
 ##  Bloco 9 — Equipe, papéis e riscos
 
-| Integrante | Papel | Responsável por |
+| Integrante | Responsável por |
 |---|---|---|
-| Joao Pedro |    | Tela principal e catálogo |
-| Joao Pietro |    | Banco de dados com Room |
-| Pedro Henrique |    | Cores, imagens, ícone |
-| Samuel Verissimo |  | README, testes, APK |
+| Joao Pedro | Tela principal e catálogo |
+| Joao Pietro | Banco de dados com Room |
+| Pedro Henrique | Cores, imagens, ícone |
+| Samuel Verissimo | README, testes, APK |
 
 **Riscos:**
 
