@@ -1,1 +1,181 @@
+PRIMEIRO PROMPT DO BOILERPLATE QUE NÓS MESMOS EDITAREMOS.
 
+
+Você deve preparar o boilerplate inicial de um projeto Android chamado **JS Reboques**.
+
+IMPORTANTE: neste momento, NÃO crie nenhuma entidade, regra de negócio, DAO, ViewModel, interface Retrofit ou banco de dados implementado. O objetivo é somente criar a infraestrutura/casca inicial do projeto, deixando o aplicativo compilável e funcionando.
+
+## Contexto do projeto
+
+O projeto é um sistema Android de gerenciamento para uma loja de reboques.
+
+Posteriormente teremos entidades como reboques, clientes, vendas, compras e estoque, mas essas entidades serão criadas separadamente pelos integrantes da equipe em commits individuais.
+
+Por isso, nesta etapa, NÃO crie nenhuma dessas entidades.
+
+## Tecnologias obrigatórias
+
+Configure o projeto utilizando:
+
+* Kotlin
+* Jetpack Compose
+* Material 3
+* Navigation Compose
+* Room Database
+* KSP
+* Retrofit 2
+* Gson Converter
+* Kotlin Coroutines
+* Flow
+
+Room e Retrofit devem ser apenas configurados como dependências no Gradle neste momento. Não implemente banco de dados, entidades, DAO ou chamadas de API.
+
+## Identificação do projeto
+
+Nome do aplicativo:
+
+JS Reboques
+
+Application ID:
+
+`br.edu.ifpe.jsreboques`
+
+Use Kotlin DSL (`build.gradle.kts`).
+
+## Estrutura de pacotes
+
+Crie a seguinte estrutura:
+
+```text
+br.edu.ifpe.jsreboques
+│
+├── data
+│   ├── local
+│   ├── remote
+│   └── repository
+│
+├── model
+│
+└── ui
+    ├── theme
+    ├── navigation
+    └── features
+```
+
+A pasta `model` deve permanecer vazia nesta etapa.
+
+As pastas `data/local`, `data/remote`, `data/repository` e `ui/features` também não precisam conter entidades ou regras de negócio.
+
+## Tema
+
+Mantenha o tema base do Jetpack Compose.
+
+Utilize:
+
+* Material 3
+* Cor principal: `#213d5e`
+* Cor complementar: `#bedeff`
+
+Mantenha os arquivos:
+
+```text
+ui/theme/Color.kt
+ui/theme/Type.kt
+ui/theme/Theme.kt
+```
+
+## Navigation
+
+Crie:
+
+```text
+ui/navigation/NavTarget.kt
+ui/navigation/NavGraph.kt
+```
+
+`NavTarget.kt` deve possuir somente uma rota:
+
+```text
+HOME
+```
+
+Não crie rotas para Reboques, Clientes, Vendas, Compras ou Estoque ainda.
+
+O `NavGraph.kt` deve possuir um `NavHost` básico contendo apenas a tela inicial.
+
+## MainActivity
+
+Configure a `MainActivity.kt` para:
+
+1. Utilizar o tema do aplicativo.
+2. Criar o NavGraph/NavHost.
+3. Exibir apenas uma tela inicial.
+4. A tela inicial deve mostrar o texto:
+
+`JS Reboques`
+
+Não implemente nenhuma funcionalidade de gerenciamento ainda.
+
+## Gradle
+
+Configure os arquivos `build.gradle.kts` necessários para o projeto.
+
+Adicione os plugins e dependências necessários para:
+
+* Jetpack Compose
+* Material 3
+* Navigation Compose
+* Room
+* KSP
+* Retrofit 2
+* Gson Converter
+* Coroutines
+
+Use versões compatíveis entre si e com a versão do Android Gradle Plugin/Kotlin já utilizada pelo projeto.
+
+Não altere versões desnecessariamente se o projeto já possuir versões modernas e compatíveis.
+
+## Restrições IMPORTANTES
+
+NÃO criar:
+
+* Entidades Room
+* `@Entity`
+* DAO
+* `@Dao`
+* `RoomDatabase`
+* AppDatabase
+* Interface Retrofit
+* API Service
+* Repository com lógica de negócio
+* ViewModel
+* Hilt
+* Koin
+* Casos de uso
+* Regras de negócio
+* Telas de cadastro
+* Telas de venda
+* Telas de estoque
+* Telas de clientes
+* Telas de compras
+
+Também não adicione funcionalidades que não foram solicitadas.
+
+## Resultado esperado
+
+Ao terminar, o projeto deve:
+
+1. Compilar sem erros.
+2. Abrir normalmente no Android Studio.
+3. Executar no emulador/dispositivo.
+4. Mostrar a tela inicial com "JS Reboques".
+5. Possuir o Navigation Compose funcionando com uma única rota HOME.
+6. Possuir as dependências de Room, Retrofit, Gson, Coroutines e Flow configuradas.
+7. Possuir a estrutura de diretórios solicitada.
+8. Estar pronto para que, em uma próxima etapa, cada integrante adicione sua própria entidade.
+
+Antes de modificar arquivos, analise a estrutura atual do projeto e preserve configurações que já estejam corretas.
+
+Depois de realizar as alterações, verifique se o projeto compila e corrija qualquer erro causado pelas alterações.
+
+Não crie entidades nesta etapa.
