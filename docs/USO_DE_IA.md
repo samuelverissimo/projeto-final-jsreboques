@@ -179,3 +179,177 @@ Antes de modificar arquivos, analise a estrutura atual do projeto e preserve con
 Depois de realizar as alterações, verifique se o projeto compila e corrija qualquer erro causado pelas alterações.
 
 Não crie entidades nesta etapa.
+
+
+SEGUNDO PROMPT (ENTIDADES):
+
+Agora vamos implementar as entidades/modelos iniciais do sistema **JS Reboques**.
+
+O boilerplate inicial do projeto já foi criado. Nesta etapa, quero adicionar somente as entidades/modelos que serão utilizados posteriormente pelo sistema.
+
+## Contexto
+
+O JS Reboques é um sistema Android para gerenciamento interno de uma loja de reboques.
+
+O sistema precisa controlar:
+
+* vendas realizadas;
+* clientes;
+* estoque de reboques;
+* compras realizadas pela empresa;
+* usuários que acessam o aplicativo.
+
+Utilize o **Room Database** já configurado no projeto.
+
+## Entidades que devem ser criadas
+
+Crie exatamente estas 5 entidades:
+
+1. `Venda`
+2. `Cliente`
+3. `EstoqueReboque`
+4. `Compra`
+5. `Usuario`
+
+Todas devem ficar no pacote:
+
+`br.edu.ifpe.jsreboques.model`
+
+## 1. Entidade Venda
+
+Crie `Venda.kt`.
+
+Campos:
+
+* `id`: Long, chave primária, com geração automática.
+* `clienteId`: Long, identificando o cliente relacionado à venda.
+* `estoqueReboqueId`: Long, identificando o reboque vendido.
+* `data`: String, armazenando a data da venda.
+* `quantidade`: Int.
+* `valorUnitario`: Double.
+* `valorTotal`: Double.
+
+Utilize `@Entity` e `@PrimaryKey(autoGenerate = true)`.
+
+## 2. Entidade Cliente
+
+Crie `Cliente.kt`.
+
+Campos:
+
+* `id`: Long, chave primária, com geração automática.
+* `nome`: String.
+* `email`: String.
+* `whatsapp`: String.
+
+Utilize `@Entity` e `@PrimaryKey(autoGenerate = true)`.
+
+## 3. Entidade EstoqueReboque
+
+Crie `EstoqueReboque.kt`.
+
+Essa entidade representa os reboques disponíveis no estoque da empresa.
+
+Campos:
+
+* `id`: Long, chave primária, com geração automática.
+* `nome`: String.
+* `marca`: String.
+* `modelo`: String.
+* `categoria`: String.
+* `valorCompra`: Double.
+* `valorVenda`: Double.
+* `quantidade`: Int.
+* `descricao`: String.
+
+Utilize `@Entity` e `@PrimaryKey(autoGenerate = true)`.
+
+## 4. Entidade Compra
+
+Crie `Compra.kt`.
+
+Essa entidade representa as compras de reboques realizadas pela empresa.
+
+Campos:
+
+* `id`: Long, chave primária, com geração automática.
+* `estoqueReboqueId`: Long, identificando o reboque comprado.
+* `data`: String.
+* `quantidade`: Int.
+* `valorUnitario`: Double.
+* `valorTotal`: Double.
+
+Utilize `@Entity` e `@PrimaryKey(autoGenerate = true)`.
+
+## 5. Entidade Usuario
+
+Crie `Usuario.kt`.
+
+Essa entidade representa os usuários autorizados a utilizar o aplicativo.
+
+Campos:
+
+* `id`: Long, chave primária, com geração automática.
+* `nome`: String.
+* `usuario`: String.
+* `senha`: String.
+* `tipo`: String.
+
+Utilize `@Entity` e `@PrimaryKey(autoGenerate = true)`.
+
+## Regras importantes
+
+Nesta etapa, faça SOMENTE a criação das entidades.
+
+NÃO crie:
+
+* DAOs;
+* `@Dao`;
+* `RoomDatabase`;
+* `AppDatabase`;
+* Repositories;
+* ViewModels;
+* Use Cases;
+* telas;
+* telas de cadastro;
+* Navigation adicional;
+* APIs;
+* Retrofit interfaces;
+* regras de negócio;
+* autenticação;
+* relacionamentos Room com `@Relation`;
+* Foreign Keys;
+* lógica de estoque;
+* lógica de venda;
+* lógica de compra.
+
+Os campos `clienteId` e `estoqueReboqueId` devem ser apenas valores `Long` nesta etapa. Os relacionamentos serão implementados posteriormente.
+
+## Organização
+
+Todas as entidades devem ficar em:
+
+`br.edu.ifpe.jsreboques.model`
+
+Não crie novos pacotes desnecessariamente.
+
+Mantenha o restante do projeto como está.
+
+## Objetivo
+
+Ao final, o projeto deve possuir:
+
+```text
+model/
+├── Venda.kt
+├── Cliente.kt
+├── EstoqueReboque.kt
+├── Compra.kt
+└── Usuario.kt
+```
+
+As cinco classes devem estar anotadas corretamente para serem utilizadas pelo Room posteriormente.
+
+Não implemente nenhuma outra funcionalidade.
+
+Depois de criar os arquivos, verifique se o projeto continua compilando e corrija somente erros relacionados a essa implementação.
