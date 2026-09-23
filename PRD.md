@@ -39,13 +39,13 @@ O sistema será utilizado principalmente por:
 - Administradores.
 - Responsáveis pelo gerenciamento da loja.
 
-O uso ocorrerá principalmente durante o atendimento aos clientes e no gerenciamento diário do estabelecimento.
+O uso ocorrerá durante o gerenciamento diário do estabelecimento.
 
 ## 5. MVP — Funcionalidades
 
 ### F1 — Gerenciamento de reboques
 
-O usuário deve conseguir:
+O usuário (dono) deve conseguir:
 
 - Cadastrar reboques.
 - Consultar reboques.
@@ -58,8 +58,6 @@ Cada reboque deverá armazenar, no mínimo:
 - Valor de compra.
 - Valor de venda.
 - Categoria.
-- Modelo.
-- Marca.
 
 ### F2 — Controle de estoque
 
@@ -73,7 +71,7 @@ O sistema deverá:
 
 ### F3 — Registro de vendas
 
-O usuário deverá conseguir:
+O usuário (dono) deverá conseguir:
 
 - Registrar uma venda.
 - Associar a venda a um cliente.
@@ -83,7 +81,7 @@ O usuário deverá conseguir:
 
 ### F4 — Registro de compras
 
-O usuário deverá conseguir:
+O usuário (dono) deverá conseguir:
 
 - Registrar uma compra.
 - Informar o reboque adquirido e sua quantidade.
