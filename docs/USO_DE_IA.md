@@ -1,5 +1,4 @@
-PRIMEIRO PROMPT DO BOILERPLATE QUE NÓS MESMOS EDITAREMOS.
-
+# PRIMEIRO PROMPT DO BOILERPLATE QUE NÓS MESMOS EDITAREMOS.
 
 Você deve preparar o boilerplate inicial de um projeto Android chamado **JS Reboques**.
 
@@ -181,7 +180,10 @@ Depois de realizar as alterações, verifique se o projeto compila e corrija qua
 Não crie entidades nesta etapa.
 
 
-SEGUNDO PROMPT (ENTIDADES):
+
+
+
+# SEGUNDO PROMPT (ENTIDADES):
 
 Agora vamos implementar as entidades/modelos iniciais do sistema **JS Reboques**.
 
