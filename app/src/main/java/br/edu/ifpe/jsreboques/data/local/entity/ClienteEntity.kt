@@ -8,4 +8,6 @@ data class ClienteEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val nome: String,
     val email: String,
+    val telefone: String,
+    val documento: String = ""
 )

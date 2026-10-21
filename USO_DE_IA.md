@@ -36,6 +36,32 @@ Este documento registra como ferramentas de Inteligência Artificial (Android St
 - **Resultado:**
   > Declaração correta de aliases no `libs.versions.toml`, execução de limpa/recompilação (`clean assembleDebug`) e correção das propriedades do Gradle.
 
+### 2.5. Entidade Cliente
+- **Autor:** Pedro Henrique
+- **Data:** 21/10/2026
+- **Ferramenta:** Gemini no Android Studio
+- **Prompt utilizado:** Estou trabalhando em um projeto Android em Kotlin com Room e preciso criar/organizar a entidade Cliente.
+
+Tarefas:
+1. Verifique se existe a classe ClienteEntity no projeto. Ela deve ficar no arquivo ClienteEntity.kt, dentro do pacote data/local/entity/. Se estiver em outro arquivo ou pacote, mova o código para esse local e ajuste os imports e o package.
+2. Se a classe ainda não existir, crie a ClienteEntity como uma data class do Room, com:
+   - @Entity(tableName = "clientes")
+   - @PrimaryKey(autoGenerate = true) val id: Int = 0
+   - Campos: nome (String), email (String), telefone (String)
+   (ajuste os campos se o projeto já tiver outros definidos)
+3. Mostre o código final completo de ClienteEntity.kt com o package correto.
+4. Gere um registro para o arquivo USO_DE_IA.md neste formato:
+
+   ## Entidade Cliente
+   - Autor: Pedro Henrique
+   - Data: 21/10/2026
+   - Ferramenta: Gemini no Android Studio
+   - Prompt utilizado: (copie aqui o texto deste prompt)
+   - O que foi gerado/alterado: (resuma em 1 ou 2 linhas)
+
+Não altere nenhum outro arquivo além de ClienteEntity.kt e USO_DE_IA.md.
+- **O que foi gerado/alterado:** A classe ClienteEntity foi movida para um arquivo próprio e atualizada com o campo telefone, mantendo a compatibilidade com o banco de dados.
+
 ---
 
 ## 3. Diretrizes de Uso da IA

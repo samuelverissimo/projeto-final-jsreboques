@@ -5,15 +5,6 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "clientes")
-data class ClienteEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val nome: String,
-    val email: String,
-    val whatsapp: String,
-    val documento: String = "",
-)
-
 @Entity(
     tableName = "vendas",
     foreignKeys = [
