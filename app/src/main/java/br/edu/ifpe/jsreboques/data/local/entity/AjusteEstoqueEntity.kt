@@ -13,10 +13,10 @@ import androidx.room.PrimaryKey
             entity = ReboqueEntity::class,
             parentColumns = ["id"],
             childColumns = ["reboqueId"],
-            onDelete = ForeignKey.RESTRICT
-        )
+            onDelete = ForeignKey.RESTRICT,
+        ),
     ],
-    indices = [Index("reboqueId")]
+    indices = [Index("reboqueId")],
 )
 data class AjusteEstoqueEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
@@ -25,5 +25,5 @@ data class AjusteEstoqueEntity(
     val motivo: String,
     val estoqueAntes: Int,
     val estoqueDepois: Int,
-    val dataHoraTimestamp: Long = System.currentTimeMillis()
+    val dataHoraTimestamp: Long = System.currentTimeMillis(),
 )

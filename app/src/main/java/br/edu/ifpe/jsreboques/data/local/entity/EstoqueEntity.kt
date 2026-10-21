@@ -11,11 +11,11 @@ import androidx.room.PrimaryKey
             entity = ReboqueEntity::class,
             parentColumns = ["id"],
             childColumns = ["reboqueId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
 )
 data class EstoqueEntity(
     @PrimaryKey val reboqueId: Long,
-    val quantidade: Int
+    val quantidade: Int,
 )
