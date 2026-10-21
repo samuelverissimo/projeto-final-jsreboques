@@ -5,6 +5,9 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/**
+ * Entidade que representa uma operação de compra de reboques para o estoque.
+ */
 @Entity(
     tableName = "compras",
     foreignKeys = [

@@ -42,6 +42,12 @@ Este documento registra como ferramentas de Inteligência Artificial (Android St
 - **Resultado:**
   > Entidade Venda configurada e integrada ao `OperacaoDao` com suporte a `@Transaction` para garantir que vendas não ocorram sem estoque suficiente.
 
+### 2.6. Entidade Compra e Relatórios (João Pietro)
+- **Prompt:**
+  > "Crie uma entidade Room chamada CompraEntity que tenha relacionamento com ReboqueEntity, controle de estoque (antes e depois) e armazene valores em centavos (Long) para evitar problemas de precisão decimal."
+- **Resultado:**
+  > Implementação da `CompraEntity` com `ForeignKey` e campos de auditoria de estoque.
+
 ---
 
 ## 3. Diretrizes de Uso da IA
