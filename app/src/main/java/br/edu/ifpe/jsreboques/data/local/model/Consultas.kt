@@ -9,23 +9,6 @@ data class ReboqueComEstoque(
     val quantidade: Int
 )
 
-data class ResumoVendas(
-    val totalCents: Long,
-    val vendas: Int,
-    val unidades: Int
-)
-
-data class VendaHistorico(
-    val id: Long,
-    val quantidade: Int,
-    val valorTotalCents: Long,
-    val estoqueAntes: Int,
-    val estoqueDepois: Int,
-    val dataHoraTimestamp: Long,
-    val reboqueNome: String,
-    val clienteNome: String
-)
-
 data class CompraHistorico(
     val id: Long,
     val quantidade: Int,

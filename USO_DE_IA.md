@@ -36,6 +36,12 @@ Este documento registra como ferramentas de Inteligência Artificial (Android St
 - **Resultado:**
   > Declaração correta de aliases no `libs.versions.toml`, execução de limpa/recompilação (`clean assembleDebug`) e correção das propriedades do Gradle.
 
+### 2.5. Gestão de Vendas e Fluxo de Estoque (João Pedro)
+- **Prompt:**
+  > "Implementar a VendaEntity com suporte a cálculos monetários em centavos (Long) e chaves estrangeiras para Reboques e Clientes. Criar o fluxo de registro de venda que valide o estoque disponível antes de finalizar a transação."
+- **Resultado:**
+  > Entidade Venda configurada e integrada ao `OperacaoDao` com suporte a `@Transaction` para garantir que vendas não ocorram sem estoque suficiente.
+
 ---
 
 ## 3. Diretrizes de Uso da IA
