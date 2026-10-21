@@ -10,5 +10,5 @@ data class UsuarioEntity(
     val nome: String,
     val username: String,
     val passwordHash: String,
-    val perfil: String // "ADMIN" ou "OPERADOR"
+    val perfil: String, // "ADMIN" ou "OPERADOR"
 )

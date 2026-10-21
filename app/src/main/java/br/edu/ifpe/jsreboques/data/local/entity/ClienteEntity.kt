@@ -9,5 +9,5 @@ data class ClienteEntity(
     val nome: String,
     val email: String,
     val whatsapp: String,
-    val documento: String = ""
+    val documento: String = "",
 )

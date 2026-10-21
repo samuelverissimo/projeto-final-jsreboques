@@ -12,5 +12,5 @@ data class ReboqueEntity(
     val categoria: String,
     val descricao: String = "",
     val valorCompraCents: Long,
-    val valorVendaCents: Long
+    val valorVendaCents: Long,
 )

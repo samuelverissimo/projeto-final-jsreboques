@@ -12,16 +12,16 @@ import androidx.room.PrimaryKey
             entity = ReboqueEntity::class,
             parentColumns = ["id"],
             childColumns = ["reboqueId"],
-            onDelete = ForeignKey.RESTRICT
+            onDelete = ForeignKey.RESTRICT,
         ),
         ForeignKey(
             entity = ClienteEntity::class,
             parentColumns = ["id"],
             childColumns = ["clienteId"],
-            onDelete = ForeignKey.RESTRICT
-        )
+            onDelete = ForeignKey.RESTRICT,
+        ),
     ],
-    indices = [Index("reboqueId"), Index("clienteId")]
+    indices = [Index("reboqueId"), Index("clienteId")],
 )
 data class VendaEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
@@ -32,5 +32,5 @@ data class VendaEntity(
     val valorTotalCents: Long,
     val estoqueAntes: Int = 0,
     val estoqueDepois: Int = 0,
-    val dataHoraTimestamp: Long = System.currentTimeMillis()
+    val dataHoraTimestamp: Long = System.currentTimeMillis(),
 )
