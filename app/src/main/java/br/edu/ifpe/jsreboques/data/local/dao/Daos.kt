@@ -17,8 +17,8 @@ import br.edu.ifpe.jsreboques.data.local.entity.VendaEntity
 import br.edu.ifpe.jsreboques.data.local.model.AjusteHistorico
 import br.edu.ifpe.jsreboques.data.local.model.CompraHistorico
 import br.edu.ifpe.jsreboques.data.local.model.ReboqueComEstoque
-import br.edu.ifpe.jsreboques.data.local.model.ResumoVendas
-import br.edu.ifpe.jsreboques.data.local.model.VendaHistorico
+import br.edu.ifpe.jsreboques.data.local.entity.ResumoVendas
+import br.edu.ifpe.jsreboques.data.local.entity.VendaHistorico
 import br.edu.ifpe.jsreboques.domain.EstoqueInsuficienteException
 import br.edu.ifpe.jsreboques.domain.ResultadoMovimento
 import kotlinx.coroutines.flow.Flow
