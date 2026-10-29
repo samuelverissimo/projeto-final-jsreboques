@@ -17,6 +17,7 @@ import br.edu.ifpe.jsreboques.data.local.entity.VendaEntity
 import br.edu.ifpe.jsreboques.data.local.model.AjusteHistorico
 import br.edu.ifpe.jsreboques.data.local.model.CompraHistorico
 import br.edu.ifpe.jsreboques.data.local.model.ReboqueComEstoque
+import br.edu.ifpe.jsreboques.data.local.entity.FornecedorEntity
 import br.edu.ifpe.jsreboques.data.local.entity.ResumoVendas
 import br.edu.ifpe.jsreboques.data.local.entity.VendaHistorico
 import br.edu.ifpe.jsreboques.domain.EstoqueInsuficienteException
@@ -81,6 +82,23 @@ interface UsuarioDao {
 
     @Insert
     suspend fun inserir(usuario: UsuarioEntity): Long
+}
+
+// ---------------------------------------------------------------- FORNECEDORES
+@Dao
+interface FornecedorDao {
+
+    @Query("SELECT * FROM fornecedores ORDER BY nome COLLATE NOCASE ASC")
+    fun observarTodos(): Flow<List<FornecedorEntity>>
+
+    @Insert
+    suspend fun inserir(fornecedor: FornecedorEntity): Long
+
+    @Update
+    suspend fun atualizar(fornecedor: FornecedorEntity)
+
+    @Query("DELETE FROM fornecedores WHERE id = :id")
+    suspend fun excluir(id: Long)
 }
 
 // ---------------------------------------------------------------- VENDAS / COMPRAS / ESTOQUE (F2, F3, F4, F8)
