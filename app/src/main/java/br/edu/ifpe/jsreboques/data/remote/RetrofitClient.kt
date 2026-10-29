@@ -1,6 +1,8 @@
 package br.edu.ifpe.jsreboques.data.remote
 
 import br.edu.ifpe.jsreboques.data.remote.api.ClienteApi
+import br.edu.ifpe.jsreboques.data.remote.api.FornecedorApi
+import br.edu.ifpe.jsreboques.data.remote.api.TarefaApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -28,5 +30,13 @@ object RetrofitClient {
 
     val clienteApi: ClienteApi by lazy {
         retrofit.create(ClienteApi::class.java)
+    }
+
+    val tarefaApi: TarefaApi by lazy {
+        retrofit.create(TarefaApi::class.java)
+    }
+
+    val fornecedorApi: FornecedorApi by lazy {
+        retrofit.create(FornecedorApi::class.java)
     }
 }

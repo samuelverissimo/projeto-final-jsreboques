@@ -1,6 +1,7 @@
 package br.edu.ifpe.jsreboques.ui.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Checklist
 import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material.icons.outlined.LocalShipping
@@ -26,9 +27,11 @@ import androidx.navigation.compose.rememberNavController
 import br.edu.ifpe.jsreboques.ui.clientes.ClientesScreen
 import br.edu.ifpe.jsreboques.ui.compra.NovaCompraScreen
 import br.edu.ifpe.jsreboques.ui.estoque.EstoqueScreen
+import br.edu.ifpe.jsreboques.ui.fornecedores.FornecedoresScreen
 import br.edu.ifpe.jsreboques.ui.historico.HistoricoScreen
 import br.edu.ifpe.jsreboques.ui.painel.PainelScreen
 import br.edu.ifpe.jsreboques.ui.reboques.ReboquesScreen
+import br.edu.ifpe.jsreboques.ui.tarefa.TarefasScreen
 import br.edu.ifpe.jsreboques.ui.theme.AzulClaro
 import br.edu.ifpe.jsreboques.ui.theme.AzulPrimario
 import br.edu.ifpe.jsreboques.ui.venda.NovaVendaScreen
@@ -41,6 +44,8 @@ object Rotas {
     const val NOVA_VENDA = "nova_venda"
     const val NOVA_COMPRA = "nova_compra"
     const val HISTORICO = "historico"
+    const val TAREFAS = "tarefas"
+    const val FORNECEDORES = "fornecedores"
 }
 
 private class ItemNavegacao(val rota: String, val rotulo: String, val icone: ImageVector)
@@ -54,7 +59,8 @@ fun AppRoot() {
             ItemNavegacao(Rotas.PAINEL, "Painel", Icons.Outlined.GridView),
             ItemNavegacao(Rotas.REBOQUES, "Reboques", Icons.Outlined.LocalShipping),
             ItemNavegacao(Rotas.ESTOQUE, "Estoque", Icons.Outlined.Inventory2),
-            ItemNavegacao(Rotas.CLIENTES, "Clientes", Icons.Outlined.People)
+            ItemNavegacao(Rotas.CLIENTES, "Clientes", Icons.Outlined.People),
+            ItemNavegacao(Rotas.TAREFAS, "Tarefas", Icons.Outlined.Checklist)
         )
     }
 
@@ -100,6 +106,8 @@ fun AppRoot() {
             composable(Rotas.REBOQUES) { ReboquesScreen() }
             composable(Rotas.ESTOQUE) { EstoqueScreen() }
             composable(Rotas.CLIENTES) { ClientesScreen() }
+            composable(Rotas.TAREFAS) { TarefasScreen() }
+            composable(Rotas.FORNECEDORES) { FornecedoresScreen() }
             composable(Rotas.NOVA_VENDA) {
                 NovaVendaScreen(
                     aoVoltar = { nav.popBackStack() },

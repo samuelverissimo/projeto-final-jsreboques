@@ -2,14 +2,16 @@ package br.edu.ifpe.jsreboques.data.repository
 
 import android.util.Log
 import br.edu.ifpe.jsreboques.data.local.dao.ClienteDao
+import br.edu.ifpe.jsreboques.data.local.dao.FornecedorDao
 import br.edu.ifpe.jsreboques.data.local.dao.OperacaoDao
 import br.edu.ifpe.jsreboques.data.local.dao.ReboqueDao
 import br.edu.ifpe.jsreboques.data.local.dao.TarefaDao
 import br.edu.ifpe.jsreboques.data.local.entity.ClienteEntity
+import br.edu.ifpe.jsreboques.data.local.entity.FornecedorEntity
 import br.edu.ifpe.jsreboques.data.local.entity.ReboqueEntity
 import br.edu.ifpe.jsreboques.data.local.entity.TarefaEntity
 import br.edu.ifpe.jsreboques.data.local.model.ReboqueComEstoque
-import br.edu.ifpe.jsreboques.data.local.model.ResumoVendas
+import br.edu.ifpe.jsreboques.data.local.entity.ResumoVendas
 import br.edu.ifpe.jsreboques.domain.Movimentacao
 import br.edu.ifpe.jsreboques.domain.Resultado
 import br.edu.ifpe.jsreboques.domain.ResultadoMovimento
@@ -136,5 +138,20 @@ class TarefaRepository(private val dao: TarefaDao) {
     suspend fun deletarTodas(): Resultado<Unit> = executarSeguro {
         dao.deletarTodas()
         Unit
+    }
+}
+
+class FornecedorRepository(private val dao: FornecedorDao) {
+
+    fun observarTodos(): Flow<List<FornecedorEntity>> =
+        dao.observarTodos().comFallback(emptyList())
+
+    suspend fun salvar(fornecedor: FornecedorEntity): Resultado<Unit> = executarSeguro {
+        if (fornecedor.id == 0L) dao.inserir(fornecedor) else dao.atualizar(fornecedor)
+        Unit
+    }
+
+    suspend fun excluir(id: Long): Resultado<Unit> = executarSeguro {
+        dao.excluir(id)
     }
 }

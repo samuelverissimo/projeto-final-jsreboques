@@ -10,4 +10,6 @@ data class ClienteEntity(
     val email: String,
     val telefone: String,
     val documento: String = ""
-)
+) {
+    val whatsapp: String get() = telefone
+}

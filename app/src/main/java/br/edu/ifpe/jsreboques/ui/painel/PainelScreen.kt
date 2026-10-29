@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
+import br.edu.ifpe.jsreboques.data.local.entity.ResumoVendas
 import br.edu.ifpe.jsreboques.data.local.model.ReboqueComEstoque
 import br.edu.ifpe.jsreboques.data.repository.OperacaoRepository
 import br.edu.ifpe.jsreboques.data.repository.ReboqueRepository
@@ -56,7 +57,7 @@ class PainelViewModel(
 ) : ViewModel() {
 
     val estado: StateFlow<PainelUiState> =
-        combine(reboques.observarTodos(), operacoes.observarResumoMes()) { lista, resumo ->
+        combine(reboques.observarTodos(), operacoes.observarResumoMes()) { lista: List<ReboqueComEstoque>, resumo: ResumoVendas ->
             val precisaAtencao = lista.filter { statusDoEstoque(it.quantidade) != StatusEstoque.NORMAL }
             PainelUiState(
                 vendasMesCents = resumo.totalCents,
@@ -88,6 +89,8 @@ private val atalhos = listOf(
     Atalho("Nova venda", Icons.Outlined.ShoppingCart, Rotas.NOVA_VENDA),
     Atalho("Nova compra", Icons.Outlined.AddShoppingCart, Rotas.NOVA_COMPRA),
     Atalho("Clientes", Icons.Outlined.People, Rotas.CLIENTES),
+    Atalho("Tarefas", Icons.Outlined.Checklist, Rotas.TAREFAS),
+    Atalho("Fornecedores", Icons.Outlined.Business, Rotas.FORNECEDORES),
     Atalho("Histórico", Icons.Outlined.History, Rotas.HISTORICO)
 )
 

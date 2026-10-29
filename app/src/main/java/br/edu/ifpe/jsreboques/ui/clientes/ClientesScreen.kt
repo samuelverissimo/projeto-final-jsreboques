@@ -108,7 +108,7 @@ class ClientesViewModel(private val repo: ClienteRepository) : ViewModel() {
         }
         val entidade = ClienteEntity(
             id = f.id, nome = f.nome.trim(), email = f.email.trim(),
-            whatsapp = f.whatsapp.somenteDigitos(), documento = f.documento.somenteDigitos()
+            telefone = f.whatsapp.somenteDigitos(), documento = f.documento.somenteDigitos()
         )
         viewModelScope.launch {
             when (val r = repo.salvar(entidade)) {

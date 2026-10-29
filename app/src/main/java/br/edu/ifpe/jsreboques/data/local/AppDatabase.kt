@@ -89,7 +89,7 @@ abstract class AppDatabase : RoomDatabase() {
                 )
                 db.execSQL("INSERT INTO estoques (reboqueId, quantidade) VALUES (1,8),(2,2),(3,0),(4,5)")
                 db.execSQL(
-                    "INSERT INTO clientes (id, nome, email, whatsapp, documento) VALUES " +
+                    "INSERT INTO clientes (id, nome, email, telefone, documento) VALUES " +
                         "(1,'Carlos Henrique Silva','carlos.silva@example.com','11900000101','11122233301')," +
                         "(2,'Agro Vale Transportes','compras.agrovale@example.com','19900000202','12345678000102')," +
                         "(3,'Mariana Oliveira Costa','mariana.costa@example.com','15900000303','11122233303')"
