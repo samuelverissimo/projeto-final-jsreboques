@@ -42,6 +42,39 @@ Este documento registra como ferramentas de Inteligência Artificial (Android St
 - **Resultado:**
   > A classe ClienteEntity foi movida para um arquivo próprio e atualizada com o campo telefone.
 
+### 2.6. Camada de Integração com API (Cliente)
+- **Autor:** Pedro Henrique
+- **Data:** 21/10/2026
+- **Ferramenta:** Gemini no Android Studio
+- **Prompt utilizado:**
+  > "Atue como um Engenheiro Android Sênior e Prompt Engineer. Com base na estrutura do projeto JS Reboques, gere a camada de integração com API para a entidade Cliente.
+  >
+  > ### CONTEXTO TÉCNICO
+  > - Pacote Base: br.edu.ifpe.jsreboques
+  > - Entidade Local Existente: ClienteEntity (id: Long, nome: String, email: String, telefone: String, documento: String) no pacote .data.local.entity.
+  > - Tecnologias: Retrofit 2.11.0, Gson, OkHttp, Coroutines (suspend functions).
+  >
+  > ### TAREFAS SOLICITADAS
+  > 1. Criação de DTO e Mappers:
+  >    - Crie `br.edu.ifpe.jsreboques.data.remote.dto.ClienteDto` para representação dos dados da API.
+  >    - Implemente funções de extensão em um arquivo `ClienteMapper.kt` para converter `ClienteDto` <-> `ClienteEntity`.
+  > 2. Interface Retrofit:
+  >    - Crie `br.edu.ifpe.jsreboques.data.remote.api.ClienteApi` com as funções:
+  >      - @GET("clientes") -> List<ClienteDto>
+  >      - @GET("clientes/{id}") -> ClienteDto
+  >      - @POST("clientes") -> ClienteDto (enviando @Body ClienteDto)
+  >      - @PUT("clientes/{id}") -> ClienteDto (enviando @Path e @Body)
+  >      - @DELETE("clientes/{id}") -> Response<Unit>
+  >    - Use `suspend functions` em todas as chamadas.
+  > 3. Configuração do Cliente:
+  >    - Crie um singleton `br.edu.ifpe.jsreboques.data.remote.RetrofitClient`.
+  >    - Configure o OkHttpClient com um `HttpLoggingInterceptor` (adicione a dependência 'com.squareup.okhttp3:logging-interceptor' caso necessário no build.gradle).
+  >    - Base URL sugerida: "https://api.jsreboques.com.br/".
+  > 4. Registro de Transparência (Documentação):
+  >    - Atualize o arquivo AGENTS.md (ou USO_DE_IA.md) na raiz do projeto.
+  >    - Adicione uma nova entrada na seção de "Android Studio Bot / Gemini" descrevendo que este prompt foi utilizado para gerar a camada de rede da entidade Cliente, visando padronização DTO/Entity e integração com Retrofit."
+- **O que foi gerado/alterado:** Implementação completa da camada de rede para Clientes (DTO, Mapper, Interface API e RetrofitClient) com suporte a logging e Coroutines.
+
 ---
 
 ## 3. Implementação da Entidade Tarefa e Manutenção (João Pedro)
