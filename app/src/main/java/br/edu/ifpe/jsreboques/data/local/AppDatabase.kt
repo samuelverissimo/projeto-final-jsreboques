@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import br.edu.ifpe.jsreboques.data.local.dao.ClienteDao
+import br.edu.ifpe.jsreboques.data.local.dao.FornecedorDao
 import br.edu.ifpe.jsreboques.data.local.dao.OperacaoDao
 import br.edu.ifpe.jsreboques.data.local.dao.ReboqueDao
 import br.edu.ifpe.jsreboques.data.local.dao.UsuarioDao
@@ -13,6 +14,7 @@ import br.edu.ifpe.jsreboques.data.local.entity.AjusteEstoqueEntity
 import br.edu.ifpe.jsreboques.data.local.entity.ClienteEntity
 import br.edu.ifpe.jsreboques.data.local.entity.CompraEntity
 import br.edu.ifpe.jsreboques.data.local.entity.EstoqueEntity
+import br.edu.ifpe.jsreboques.data.local.entity.FornecedorEntity
 import br.edu.ifpe.jsreboques.data.local.entity.ReboqueEntity
 import br.edu.ifpe.jsreboques.data.local.entity.UsuarioEntity
 import br.edu.ifpe.jsreboques.data.local.entity.VendaEntity
@@ -28,9 +30,10 @@ private const val POPULAR_DADOS_DEMO = true
         VendaEntity::class,
         CompraEntity::class,
         AjusteEstoqueEntity::class,
-        UsuarioEntity::class
+        UsuarioEntity::class,
+        FornecedorEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -39,6 +42,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun clienteDao(): ClienteDao
     abstract fun operacaoDao(): OperacaoDao
     abstract fun usuarioDao(): UsuarioDao
+    abstract fun fornecedorDao(): FornecedorDao
 
     companion object {
         fun criar(context: Context): AppDatabase =
