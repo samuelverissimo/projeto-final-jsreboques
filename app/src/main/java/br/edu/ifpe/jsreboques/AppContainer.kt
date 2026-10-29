@@ -7,6 +7,7 @@ import br.edu.ifpe.jsreboques.data.remote.RetrofitFactory
 import br.edu.ifpe.jsreboques.data.repository.ClienteRepository
 import br.edu.ifpe.jsreboques.data.repository.OperacaoRepository
 import br.edu.ifpe.jsreboques.data.repository.ReboqueRepository
+import br.edu.ifpe.jsreboques.data.repository.TarefaRepository
 
 /**
  * Injeção de dependência "manual" (simples para iniciantes).
@@ -14,11 +15,12 @@ import br.edu.ifpe.jsreboques.data.repository.ReboqueRepository
  */
 class AppContainer(context: Context) {
 
-    private val db = AppDatabase.criar(context)
+    private val db = AppDatabase.getDatabase(context)
 
     val reboqueRepository = ReboqueRepository(db.reboqueDao())
     val clienteRepository = ClienteRepository(db.clienteDao())
     val operacaoRepository = OperacaoRepository(db.operacaoDao())
+    val tarefaRepository = TarefaRepository(db.tarefaDao())
 
     // Ainda não é usado pelos repositórios (sincronização fica para depois).
     val api: ApiService by lazy { RetrofitFactory.criar() }

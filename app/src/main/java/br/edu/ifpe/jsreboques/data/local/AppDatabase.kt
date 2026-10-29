@@ -9,6 +9,7 @@ import br.edu.ifpe.jsreboques.data.local.dao.ClienteDao
 import br.edu.ifpe.jsreboques.data.local.dao.FornecedorDao
 import br.edu.ifpe.jsreboques.data.local.dao.OperacaoDao
 import br.edu.ifpe.jsreboques.data.local.dao.ReboqueDao
+import br.edu.ifpe.jsreboques.data.local.dao.TarefaDao
 import br.edu.ifpe.jsreboques.data.local.dao.UsuarioDao
 import br.edu.ifpe.jsreboques.data.local.entity.AjusteEstoqueEntity
 import br.edu.ifpe.jsreboques.data.local.entity.ClienteEntity
@@ -16,6 +17,7 @@ import br.edu.ifpe.jsreboques.data.local.entity.CompraEntity
 import br.edu.ifpe.jsreboques.data.local.entity.EstoqueEntity
 import br.edu.ifpe.jsreboques.data.local.entity.FornecedorEntity
 import br.edu.ifpe.jsreboques.data.local.entity.ReboqueEntity
+import br.edu.ifpe.jsreboques.data.local.entity.TarefaEntity
 import br.edu.ifpe.jsreboques.data.local.entity.UsuarioEntity
 import br.edu.ifpe.jsreboques.data.local.entity.VendaEntity
 
@@ -31,9 +33,10 @@ private const val POPULAR_DADOS_DEMO = true
         CompraEntity::class,
         AjusteEstoqueEntity::class,
         UsuarioEntity::class,
-        FornecedorEntity::class
+        FornecedorEntity::class,
+        TarefaEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -43,12 +46,32 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun operacaoDao(): OperacaoDao
     abstract fun usuarioDao(): UsuarioDao
     abstract fun fornecedorDao(): FornecedorDao
+    abstract fun tarefaDao(): TarefaDao
 
     companion object {
-        fun criar(context: Context): AppDatabase =
-            Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "js_reboques.db")
-                .addCallback(SementeDemo)
-                .build()
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
+
+        fun getDatabase(context: Context): AppDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    "js_reboques.db"
+                )
+                    .addCallback(SementeDemo)
+                    .fallbackToDestructiveMigration()
+                    .build()
+                INSTANCE = instance
+                instance
+            }
+        }
+
+        /**
+         * Método antigo mantido por compatibilidade com AppContainer, 
+         * agora chama internamente o Singleton.
+         */
+        fun criar(context: Context): AppDatabase = getDatabase(context)
 
         // Roda uma única vez, quando o banco é criado pela primeira vez.
         // DICA: se mudar as entidades durante o desenvolvimento, desinstale o app

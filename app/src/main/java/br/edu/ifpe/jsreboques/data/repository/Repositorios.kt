@@ -4,8 +4,10 @@ import android.util.Log
 import br.edu.ifpe.jsreboques.data.local.dao.ClienteDao
 import br.edu.ifpe.jsreboques.data.local.dao.OperacaoDao
 import br.edu.ifpe.jsreboques.data.local.dao.ReboqueDao
+import br.edu.ifpe.jsreboques.data.local.dao.TarefaDao
 import br.edu.ifpe.jsreboques.data.local.entity.ClienteEntity
 import br.edu.ifpe.jsreboques.data.local.entity.ReboqueEntity
+import br.edu.ifpe.jsreboques.data.local.entity.TarefaEntity
 import br.edu.ifpe.jsreboques.data.local.model.ReboqueComEstoque
 import br.edu.ifpe.jsreboques.data.local.model.ResumoVendas
 import br.edu.ifpe.jsreboques.domain.Movimentacao
@@ -112,4 +114,27 @@ class OperacaoRepository(private val dao: OperacaoDao) {
             }
             (v + c + a).sortedByDescending { it.timestamp }
         }.comFallback(emptyList())
+}
+
+class TarefaRepository(private val dao: TarefaDao) {
+
+    fun observarTodas(): Flow<List<TarefaEntity>> =
+        dao.listarTodas().comFallback(emptyList())
+
+    suspend fun buscarPorId(id: Int): TarefaEntity? = dao.buscarPorId(id)
+
+    suspend fun salvar(tarefa: TarefaEntity): Resultado<Unit> = executarSeguro {
+        if (tarefa.id == 0) dao.inserir(tarefa) else dao.atualizar(tarefa)
+        Unit
+    }
+
+    suspend fun deletar(tarefa: TarefaEntity): Resultado<Unit> = executarSeguro {
+        dao.deletar(tarefa)
+        Unit
+    }
+
+    suspend fun deletarTodas(): Resultado<Unit> = executarSeguro {
+        dao.deletarTodas()
+        Unit
+    }
 }

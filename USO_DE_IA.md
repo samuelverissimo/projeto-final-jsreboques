@@ -36,34 +36,40 @@ Este documento registra como ferramentas de Inteligência Artificial (Android St
 - **Resultado:**
   > Declaração correta de aliases no `libs.versions.toml`, execução de limpa/recompilação (`clean assembleDebug`) e correção das propriedades do Gradle.
 
-### 2.5. Entidade Cliente
-- **Autor:** Pedro Henrique
-- **Data:** 21/10/2026
-- **Ferramenta:** Gemini no Android Studio
-- **Prompt utilizado:** Estou trabalhando em um projeto Android em Kotlin com Room e preciso criar/organizar a entidade Cliente.
-
-Tarefas:
-1. Verifique se existe a classe ClienteEntity no projeto. Ela deve ficar no arquivo ClienteEntity.kt, dentro do pacote data/local/entity/. Se estiver em outro arquivo ou pacote, mova o código para esse local e ajuste os imports e o package.
-2. Se a classe ainda não existir, crie a ClienteEntity como uma data class do Room, com:
-   - @Entity(tableName = "clientes")
-   - @PrimaryKey(autoGenerate = true) val id: Int = 0
-   - Campos: nome (String), email (String), telefone (String)
-   (ajuste os campos se o projeto já tiver outros definidos)
-3. Mostre o código final completo de ClienteEntity.kt com o package correto.
-4. Gere um registro para o arquivo USO_DE_IA.md neste formato:
-
-   ## Entidade Cliente
-   - Autor: Pedro Henrique
-   - Data: 21/10/2026
-   - Ferramenta: Gemini no Android Studio
-   - Prompt utilizado: (copie aqui o texto deste prompt)
-   - O que foi gerado/alterado: (resuma em 1 ou 2 linhas)
-
-Não altere nenhum outro arquivo além de ClienteEntity.kt e USO_DE_IA.md.
-- **O que foi gerado/alterado:** A classe ClienteEntity foi movida para um arquivo próprio e atualizada com o campo telefone, mantendo a compatibilidade com o banco de dados.
+### 2.5. Entidade Cliente (Pedro Henrique)
+- **Prompt:** 
+  > "Estou trabalhando em um projeto Android em Kotlin com Room e preciso criar/organizar a entidade Cliente..."
+- **Resultado:**
+  > A classe ClienteEntity foi movida para um arquivo próprio e atualizada com o campo telefone.
 
 ---
 
-## 3. Diretrizes de Uso da IA
+## 3. Implementação da Entidade Tarefa e Manutenção (João Pedro)
+- **Data:** 22/05/2024
+- **Ferramenta:** Assistente de IA no Android Studio
+
+### Prompt 1: Resolução de Erro de Sincronização
+> "I'm getting the following error while syncing my project. The error is: com.intellij.openapi.externalSystem.model.ExternalSystemException: Could not resolve all dependencies for configuration ':app:debugAndroidTestCompileClasspath'. Fix this issue"
+
+**O que foi feito:**
+- Identificação de erro de falta de espaço em disco e travamento de cache do Gradle.
+- Sugestão de limpeza manual e interrupção de processos do Gradle Daemon.
+
+### Prompt 2: Camada de Dados para Tarefas
+> "Estou fazendo um app Android em Kotlin (matéria de Dispositivos Móveis) e sou responsável pela camada de dados com Room. Entidade: Tarefa. Campos: id (Int, autogerado), titulo (String), descricao (String), concluida (Boolean). Gere: 1. Dependências do Room (com KSP) para o build.gradle 2. A entidade (@Entity, data class) 3. O DAO (@Dao) com: inserir, atualizar, deletar, buscar por id, listar todos (Flow) e deletar todos, usando suspend 4. A classe AppDatabase (singleton)"
+
+**O que foi feito:**
+1. **TarefaEntity.kt:** Criada com campos auto-gerados e estrutura Room.
+2. **TarefaDao.kt:** Implementado CRUD completo com Flow e Suspend functions.
+3. **AppDatabase.kt:** Atualizado para a versão 3, inclusão da nova entidade e implementação do padrão **Singleton** seguro (`@Volatile` e `synchronized`).
+4. **TarefaRepository:** Criado em `Repositorios.kt` integrando com a lógica de tratamento de erros (`executarSeguro`) do projeto.
+5. **AppContainer.kt:** Registrado o novo repositório para injeção de dependência.
+
+### Prompt 3: Registro de prompts
+> "salve todos os prompts na pasta USO DE IA"
+
+---
+
+## 4. Diretrizes de Uso da IA
 1. Todo o código gerado foi revisado, testado e validado via compilação e testes unitários no Android Studio.
-2. Cada membro da equipe é responsável por registrar seus próprios prompts e contribuições específicas nos commits das suas respectivas entidades.
+2. Cada membro da equipe é responsável por registrar seus próprios prompts e contribuições específicas.
