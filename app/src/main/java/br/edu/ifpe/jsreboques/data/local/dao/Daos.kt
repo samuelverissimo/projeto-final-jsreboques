@@ -71,6 +71,9 @@ interface ClienteDao {
 
     @Update
     suspend fun atualizar(cliente: ClienteEntity)
+
+    @Upsert
+    suspend fun sincronizar(clientes: List<ClienteEntity>)
 }
 
 // ---------------------------------------------------------------- USUÁRIOS (F7 - futuro)

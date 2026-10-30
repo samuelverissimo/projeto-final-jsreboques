@@ -69,6 +69,10 @@ class ClientesViewModel(private val repo: ClienteRepository) : ViewModel() {
     private val formulario = MutableStateFlow<FormCliente?>(null)
     private val mensagem = MutableStateFlow<String?>(null)
 
+    init {
+        viewModelScope.launch { repo.sincronizar() }
+    }
+
     val estado: StateFlow<ClientesUiState> =
         combine(repo.observarTodos(), busca, formulario, mensagem) { lista, b, f, m ->
             ClientesUiState(

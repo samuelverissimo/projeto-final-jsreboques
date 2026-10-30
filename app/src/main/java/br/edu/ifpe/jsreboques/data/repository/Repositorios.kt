@@ -12,6 +12,8 @@ import br.edu.ifpe.jsreboques.data.local.entity.ReboqueEntity
 import br.edu.ifpe.jsreboques.data.local.entity.TarefaEntity
 import br.edu.ifpe.jsreboques.data.local.model.ReboqueComEstoque
 import br.edu.ifpe.jsreboques.data.local.entity.ResumoVendas
+import br.edu.ifpe.jsreboques.data.remote.api.ClienteApi
+import br.edu.ifpe.jsreboques.data.remote.mapper.toEntity
 import br.edu.ifpe.jsreboques.domain.Movimentacao
 import br.edu.ifpe.jsreboques.domain.Resultado
 import br.edu.ifpe.jsreboques.domain.ResultadoMovimento
@@ -46,10 +48,15 @@ class ReboqueRepository(private val dao: ReboqueDao) {
     }
 }
 
-class ClienteRepository(private val dao: ClienteDao) {
+class ClienteRepository(private val dao: ClienteDao, private val api: ClienteApi) {
 
     fun observarTodos(): Flow<List<ClienteEntity>> =
         dao.observarTodos().comFallback(emptyList())
+
+    suspend fun sincronizar(): Resultado<Unit> = executarSeguro {
+        dao.sincronizar(api.getClientes().map { it.toEntity() })
+        Unit
+    }
 
     suspend fun salvar(cliente: ClienteEntity): Resultado<Unit> = executarSeguro {
         if (cliente.id == 0L) dao.inserir(cliente) else dao.atualizar(cliente)
