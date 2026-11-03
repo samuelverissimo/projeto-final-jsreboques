@@ -1,3 +1,7 @@
+// O que faz: Biblioteca central de componentes reutilizáveis Jetpack Compose da aplicação.
+// Por que existe: Padroniza cartões, botões, campos de busca, modais e componentes de estado de tela (MensagemCentral).
+// O que quebra se sumir: Todas as telas perdem a consistência visual, botões e elementos centrais de mensagem de erro/vazio.
+
 package br.edu.ifpe.jsreboques.ui.components
 
 import androidx.compose.foundation.BorderStroke
@@ -26,6 +30,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -320,3 +325,30 @@ fun BoxScope.SnackbarDeMensagem(mensagem: String?, aoExibir: () -> Unit) {
     }
     SnackbarHost(host, modifier = Modifier.align(Alignment.BottomCenter).padding(16.dp))
 }
+
+/** Componente centralizado para os estados Vazio e Erro. */
+@Composable
+fun MensagemCentral(
+    texto: String,
+    rotuloBotao: String,
+    aoClicar: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = texto, textAlign = TextAlign.Center, style = MaterialTheme.typography.bodyLarge)
+        Spacer(Modifier.height(16.dp))
+        Button(
+            onClick = aoClicar,
+            colors = ButtonDefaults.buttonColors(containerColor = AzulPrimario)
+        ) {
+            Text(rotuloBotao)
+        }
+    }
+}
+

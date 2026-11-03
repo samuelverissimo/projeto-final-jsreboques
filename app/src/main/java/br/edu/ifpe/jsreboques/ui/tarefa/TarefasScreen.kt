@@ -1,3 +1,7 @@
+// O que faz: Exibe a lista de tarefas da equipe e permite criar, editar e excluir afazeres.
+// Por que existe: Gerencia a tela de tarefas utilizando os quatro estados (Carregando, Vazio, Erro e Sucesso).
+// O que quebra se sumir: O acompanhamento de tarefas da equipe deixa de funcionar.
+
 package br.edu.ifpe.jsreboques.ui.tarefa
 
 import androidx.compose.foundation.clickable
@@ -5,7 +9,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -18,27 +21,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
+import br.edu.ifpe.jsreboques.R
 import br.edu.ifpe.jsreboques.data.local.entity.TarefaEntity
 import br.edu.ifpe.jsreboques.data.repository.TarefaRepository
 import br.edu.ifpe.jsreboques.domain.Resultado
+import br.edu.ifpe.jsreboques.ui.UiState
 import br.edu.ifpe.jsreboques.ui.components.*
 import br.edu.ifpe.jsreboques.ui.theme.AzulClaro
 import br.edu.ifpe.jsreboques.ui.theme.AzulPrimario
-import br.edu.ifpe.jsreboques.ui.theme.AzulSuave
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 data class FormTarefa(
     val id: Int = 0,
@@ -50,33 +53,52 @@ data class FormTarefa(
     val valido get() = titulo.isNotBlank()
 }
 
-data class TarefasUiState(
-    val busca: String = "",
-    val tarefas: List<TarefaEntity> = emptyList(),
-    val formulario: FormTarefa? = null,
-    val mensagem: String? = null
-)
-
 class TarefaViewModel(private val repository: TarefaRepository) : ViewModel() {
+
+    private val _estadoUi = MutableStateFlow<UiState<TarefaEntity>>(UiState.Carregando)
+    val estadoUi: StateFlow<UiState<TarefaEntity>> = _estadoUi.asStateFlow()
 
     private val busca = MutableStateFlow("")
     private val formulario = MutableStateFlow<FormTarefa?>(null)
     private val mensagem = MutableStateFlow<String?>(null)
 
-    val estado: StateFlow<TarefasUiState> =
-        combine(repository.observarTodas(), busca, formulario, mensagem) { lista, b, f, m ->
-            TarefasUiState(
-                busca = b,
-                tarefas = lista.filter {
-                    b.isBlank() || it.titulo.contains(b, ignoreCase = true) ||
-                            it.descricao.contains(b, ignoreCase = true)
-                },
-                formulario = f,
-                mensagem = m
-            )
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TarefasUiState())
+    val buscaAtual get() = busca.value
+    val formularioAtual get() = formulario.value
+    val mensagemAtual get() = mensagem.value
 
-    fun aoBuscar(t: String) { busca.value = t }
+    init {
+        carregar()
+    }
+
+    fun carregar() {
+        viewModelScope.launch {
+            _estadoUi.value = UiState.Carregando
+            try {
+                repository.observarTodas().collect { lista ->
+                    val b = busca.value
+                    val filtradas = lista.filter {
+                        b.isBlank() || it.titulo.contains(b, ignoreCase = true) ||
+                            it.descricao.contains(b, ignoreCase = true)
+                    }
+                    _estadoUi.value = if (filtradas.isEmpty()) {
+                        UiState.Vazio
+                    } else {
+                        UiState.Sucesso(filtradas)
+                    }
+                }
+            } catch (e: IOException) {
+                _estadoUi.value = UiState.Erro("Sem conexão. Verifique a internet e tente novamente.")
+            } catch (e: Exception) {
+                _estadoUi.value = UiState.Erro("Não foi possível carregar os dados.")
+            }
+        }
+    }
+
+    fun aoBuscar(t: String) {
+        busca.value = t
+        carregar()
+    }
+
     fun nova() { formulario.value = FormTarefa() }
     fun fecharFormulario() { formulario.value = null }
     fun mensagemConsumida() { mensagem.value = null }
@@ -98,7 +120,7 @@ class TarefaViewModel(private val repository: TarefaRepository) : ViewModel() {
         viewModelScope.launch {
             val alterada = t.copy(concluida = !t.concluida)
             when (val r = repository.salvar(alterada)) {
-                is Resultado.Sucesso -> {}
+                is Resultado.Sucesso -> carregar()
                 is Resultado.Falha -> mensagem.value = r.mensagem
             }
         }
@@ -118,7 +140,10 @@ class TarefaViewModel(private val repository: TarefaRepository) : ViewModel() {
         )
         viewModelScope.launch {
             when (val r = repository.salvar(entidade)) {
-                is Resultado.Sucesso -> formulario.value = null
+                is Resultado.Sucesso -> {
+                    formulario.value = null
+                    carregar()
+                }
                 is Resultado.Falha -> mensagem.value = r.mensagem
             }
         }
@@ -130,6 +155,7 @@ class TarefaViewModel(private val repository: TarefaRepository) : ViewModel() {
                 is Resultado.Sucesso -> {
                     if (formulario.value?.id == t.id) formulario.value = null
                     mensagem.value = "Tarefa excluída"
+                    carregar()
                 }
                 is Resultado.Falha -> mensagem.value = r.mensagem
             }
@@ -141,63 +167,95 @@ class TarefaViewModel(private val repository: TarefaRepository) : ViewModel() {
 fun TarefasScreen(
     vm: TarefaViewModel = appViewModel<TarefaViewModel> { TarefaViewModel(it.tarefaRepository) }
 ) {
-    val e by vm.estado.collectAsStateWithLifecycle()
+    val estadoUi by vm.estadoUi.collectAsStateWithLifecycle()
 
     Box(Modifier.fillMaxSize()) {
-        LazyColumn(
-            Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 100.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            item { CabecalhoTela("Tarefas", "Gerenciamento de tarefas e entregas") }
-            item { CampoBusca(e.busca, vm::aoBuscar, "Buscar por título ou descrição") }
-            item {
-                Text(
-                    "${e.tarefas.size} tarefas cadastradas",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+        when (val atual = estadoUi) {
+            is UiState.Carregando -> {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = AzulPrimario)
+                }
             }
-            items(e.tarefas, key = { it.id }) { t ->
-                Cartao(
-                    modifier = Modifier.fillMaxWidth(),
-                    aoClicar = { vm.editar(t) }
+
+            is UiState.Vazio -> {
+                Column(Modifier.fillMaxSize()) {
+                    CabecalhoTela("Tarefas", "Gerenciamento de tarefas e entregas")
+                    MensagemCentral(
+                        texto = stringResource(R.string.lista_vazia),
+                        rotuloBotao = stringResource(R.string.adicionar_primeiro),
+                        aoClicar = vm::nova
+                    )
+                }
+            }
+
+            is UiState.Erro -> {
+                Column(Modifier.fillMaxSize()) {
+                    CabecalhoTela("Tarefas", "Gerenciamento de tarefas e entregas")
+                    MensagemCentral(
+                        texto = atual.mensagem,
+                        rotuloBotao = stringResource(R.string.tentar_novamente),
+                        aoClicar = vm::carregar
+                    )
+                }
+            }
+
+            is UiState.Sucesso -> {
+                LazyColumn(
+                    Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 100.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        IconButton(onClick = { vm.alternarConcluida(t) }) {
-                            Icon(
-                                imageVector = if (t.concluida) Icons.Filled.CheckCircle else Icons.Outlined.RadioButtonUnchecked,
-                                contentDescription = if (t.concluida) "Concluída" else "Pendente",
-                                tint = if (t.concluida) AzulPrimario else Color.Gray
-                            )
-                        }
-                        Spacer(Modifier.width(8.dp))
-                        Column(Modifier.weight(1f)) {
-                            Text(
-                                text = t.titulo,
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                textDecoration = if (t.concluida) TextDecoration.LineThrough else TextDecoration.None
-                            )
-                            if (t.descricao.isNotBlank()) {
-                                Text(
-                                    text = t.descricao,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
+                    item { CabecalhoTela("Tarefas", "Gerenciamento de tarefas e entregas") }
+                    item { CampoBusca(vm.buscaAtual, vm::aoBuscar, "Buscar por título ou descrição") }
+                    item {
+                        Text(
+                            "${atual.itens.size} tarefas cadastradas",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    items(atual.itens, key = { it.id }) { t ->
+                        Cartao(
+                            modifier = Modifier.fillMaxWidth(),
+                            aoClicar = { vm.editar(t) }
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                IconButton(onClick = { vm.alternarConcluida(t) }) {
+                                    Icon(
+                                        imageVector = if (t.concluida) Icons.Filled.CheckCircle else Icons.Outlined.RadioButtonUnchecked,
+                                        contentDescription = if (t.concluida) "Concluída" else "Pendente",
+                                        tint = if (t.concluida) AzulPrimario else Color.Gray
+                                    )
+                                }
+                                Spacer(Modifier.width(8.dp))
+                                Column(Modifier.weight(1f)) {
+                                    Text(
+                                        text = t.titulo,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        textDecoration = if (t.concluida) TextDecoration.LineThrough else TextDecoration.None
+                                    )
+                                    if (t.descricao.isNotBlank()) {
+                                        Text(
+                                            text = t.descricao,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+                                IconButton(onClick = { vm.deletar(t) }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Delete,
+                                        contentDescription = "Deletar tarefa",
+                                        tint = MaterialTheme.colorScheme.error
+                                    )
+                                }
                             }
-                        }
-                        IconButton(onClick = { vm.deletar(t) }) {
-                            Icon(
-                                imageVector = Icons.Filled.Delete,
-                                contentDescription = "Deletar tarefa",
-                                tint = MaterialTheme.colorScheme.error
-                            )
                         }
                     }
                 }
@@ -217,7 +275,7 @@ fun TarefasScreen(
             Text("Nova tarefa", fontWeight = FontWeight.SemiBold)
         }
 
-        e.formulario?.let { f ->
+        vm.formularioAtual?.let { f ->
             FormularioTarefa(
                 form = f,
                 aoMudar = vm::alterarFormulario,
@@ -225,7 +283,7 @@ fun TarefasScreen(
                 aoFechar = vm::fecharFormulario
             )
         }
-        SnackbarDeMensagem(e.mensagem, vm::mensagemConsumida)
+        SnackbarDeMensagem(vm.mensagemAtual, vm::mensagemConsumida)
     }
 }
 

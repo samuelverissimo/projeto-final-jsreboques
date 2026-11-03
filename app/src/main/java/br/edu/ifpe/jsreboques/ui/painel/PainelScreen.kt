@@ -1,3 +1,7 @@
+// O que faz: Painel de controle e resumo geral das métricas de vendas, estoque e atalhos da fábrica.
+// Por que existe: Serve como tela inicial do sistema para visualização rápida da saúde do negócio.
+// O que quebra se sumir: O usuário não possui mais a tela principal de atalhos e indicadores consolidados.
+
 package br.edu.ifpe.jsreboques.ui.painel
 
 import androidx.compose.foundation.layout.*

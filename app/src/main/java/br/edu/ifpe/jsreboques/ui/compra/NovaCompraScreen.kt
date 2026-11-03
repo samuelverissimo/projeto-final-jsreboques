@@ -1,3 +1,7 @@
+// O que faz: Registra a aquisição/compra de reboques pela empresa, incrementando o estoque.
+// Por que existe: Permite reposição de inventário e lançamento de custos de aquisição dos reboques.
+// O que quebra se sumir: A empresa perde a funcionalidade de dar entrada em novos reboques comprados.
+
 package br.edu.ifpe.jsreboques.ui.compra
 
 import androidx.compose.foundation.background

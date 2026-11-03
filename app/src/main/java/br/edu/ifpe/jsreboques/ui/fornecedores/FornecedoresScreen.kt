@@ -1,3 +1,7 @@
+// O que faz: Exibe a lista de fornecedores parceiros e permite gerenciar seus contatos.
+// Por que existe: Gerencia a interface de fornecedores e permite o cadastro de parceiros de peças.
+// O que quebra se sumir: O aplicativo perde a visualização e cadastro de fornecedores.
+
 package br.edu.ifpe.jsreboques.ui.fornecedores
 
 import androidx.compose.foundation.background
@@ -31,7 +35,6 @@ import br.edu.ifpe.jsreboques.ui.theme.AzulClaro
 import br.edu.ifpe.jsreboques.ui.theme.AzulPrimario
 import br.edu.ifpe.jsreboques.ui.theme.AzulSuave
 import br.edu.ifpe.jsreboques.util.iniciais
-import br.edu.ifpe.jsreboques.util.somenteDigitos
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -56,6 +59,7 @@ data class FornecedoresUiState(
     val mensagem: String? = null
 )
 
+// TODO (João Pietro): Implementar a Atividade 07 (UiState com Carregando, Vazio, Erro e Sucesso)
 class FornecedoresViewModel(private val repo: FornecedorRepository) : ViewModel() {
 
     private val busca = MutableStateFlow("")

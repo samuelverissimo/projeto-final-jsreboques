@@ -1,3 +1,7 @@
+// O que faz: Exibe o catálogo de reboques com preços, categorias e status de estoque.
+// Por que existe: Gerencia a listagem e cadastro de reboques com os quatro estados de interface (Carregando, Vazio, Erro e Sucesso).
+// O que quebra se sumir: O usuário não consegue visualizar nem cadastrar novos reboques no sistema.
+
 package br.edu.ifpe.jsreboques.ui.reboques
 
 import androidx.compose.foundation.background
@@ -17,18 +21,21 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
+import br.edu.ifpe.jsreboques.R
 import br.edu.ifpe.jsreboques.data.local.entity.ReboqueEntity
 import br.edu.ifpe.jsreboques.data.local.model.ReboqueComEstoque
 import br.edu.ifpe.jsreboques.data.repository.ReboqueRepository
 import br.edu.ifpe.jsreboques.domain.CATEGORIAS_REBOQUE
 import br.edu.ifpe.jsreboques.domain.Resultado
 import br.edu.ifpe.jsreboques.domain.statusDoEstoque
+import br.edu.ifpe.jsreboques.ui.UiState
 import br.edu.ifpe.jsreboques.ui.components.*
 import br.edu.ifpe.jsreboques.ui.theme.AzulClaro
 import br.edu.ifpe.jsreboques.ui.theme.AzulPrimario
@@ -38,11 +45,10 @@ import br.edu.ifpe.jsreboques.util.centsParaCampo
 import br.edu.ifpe.jsreboques.util.paraReais
 import br.edu.ifpe.jsreboques.util.reaisParaCents
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 data class FormReboque(
     val id: Long = 0,
@@ -60,38 +66,64 @@ data class FormReboque(
             categoria.isNotBlank() && compra.reaisParaCents() != null && venda.reaisParaCents() != null
 }
 
-data class ReboquesUiState(
-    val busca: String = "",
-    val categoria: String? = null,
-    val categorias: List<String> = emptyList(),
-    val itens: List<ReboqueComEstoque> = emptyList(),
-    val formulario: FormReboque? = null,
-    val mensagem: String? = null
-)
-
 class ReboquesViewModel(private val repo: ReboqueRepository) : ViewModel() {
+
+    private val _estadoUi = MutableStateFlow<UiState<ReboqueComEstoque>>(UiState.Carregando)
+    val estadoUi: StateFlow<UiState<ReboqueComEstoque>> = _estadoUi.asStateFlow()
 
     private val busca = MutableStateFlow("")
     private val categoria = MutableStateFlow<String?>(null)
     private val formulario = MutableStateFlow<FormReboque?>(null)
     private val mensagem = MutableStateFlow<String?>(null)
+    private val categoriasDisponiveis = MutableStateFlow<List<String>>(emptyList())
 
-    val estado: StateFlow<ReboquesUiState> =
-        combine(repo.observarTodos(), busca, categoria, formulario, mensagem) { lista, b, c, f, m ->
-            val filtrada = lista.filter { item ->
-                (c == null || item.reboque.categoria == c) &&
-                    (b.isBlank() || item.reboque.nome.contains(b, ignoreCase = true) ||
-                        item.reboque.modelo.contains(b, ignoreCase = true))
+    val buscaAtual get() = busca.value
+    val categoriaAtual get() = categoria.value
+    val categoriasLista get() = categoriasDisponiveis.value
+    val formularioAtual get() = formulario.value
+    val mensagemAtual get() = mensagem.value
+
+    init {
+        carregar()
+    }
+
+    fun carregar() {
+        viewModelScope.launch {
+            _estadoUi.value = UiState.Carregando
+            try {
+                repo.observarTodos().collect { lista ->
+                    categoriasDisponiveis.value = (CATEGORIAS_REBOQUE + lista.map { it.reboque.categoria }).distinct()
+                    val b = busca.value
+                    val c = categoria.value
+                    val filtrada = lista.filter { item ->
+                        (c == null || item.reboque.categoria == c) &&
+                            (b.isBlank() || item.reboque.nome.contains(b, ignoreCase = true) ||
+                                item.reboque.modelo.contains(b, ignoreCase = true))
+                    }
+                    _estadoUi.value = if (filtrada.isEmpty()) {
+                        UiState.Vazio
+                    } else {
+                        UiState.Sucesso(filtrada)
+                    }
+                }
+            } catch (e: IOException) {
+                _estadoUi.value = UiState.Erro("Sem conexão. Verifique a internet e tente novamente.")
+            } catch (e: Exception) {
+                _estadoUi.value = UiState.Erro("Não foi possível carregar os dados.")
             }
-            ReboquesUiState(
-                busca = b, categoria = c,
-                categorias = (CATEGORIAS_REBOQUE + lista.map { it.reboque.categoria }).distinct(),
-                itens = filtrada, formulario = f, mensagem = m
-            )
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ReboquesUiState())
+        }
+    }
 
-    fun aoBuscar(texto: String) { busca.value = texto }
-    fun aoSelecionarCategoria(c: String?) { categoria.value = c }
+    fun aoBuscar(texto: String) {
+        busca.value = texto
+        carregar()
+    }
+
+    fun aoSelecionarCategoria(c: String?) {
+        categoria.value = c
+        carregar()
+    }
+
     fun novo() { formulario.value = FormReboque() }
     fun alterar(f: FormReboque) { formulario.value = f }
     fun fechar() { formulario.value = null }
@@ -121,7 +153,10 @@ class ReboquesViewModel(private val repo: ReboqueRepository) : ViewModel() {
         )
         viewModelScope.launch {
             when (val r = repo.salvar(entidade)) {
-                is Resultado.Sucesso -> formulario.value = null
+                is Resultado.Sucesso -> {
+                    formulario.value = null
+                    carregar()
+                }
                 is Resultado.Falha -> mensagem.value = r.mensagem
             }
         }
@@ -131,7 +166,10 @@ class ReboquesViewModel(private val repo: ReboqueRepository) : ViewModel() {
         val f = formulario.value ?: return
         viewModelScope.launch {
             when (val r = repo.excluir(f.id)) {
-                is Resultado.Sucesso -> formulario.value = null
+                is Resultado.Sucesso -> {
+                    formulario.value = null
+                    carregar()
+                }
                 is Resultado.Falha -> mensagem.value = r.mensagem
             }
         }
@@ -142,33 +180,64 @@ class ReboquesViewModel(private val repo: ReboqueRepository) : ViewModel() {
 fun ReboquesScreen(
     vm: ReboquesViewModel = appViewModel<ReboquesViewModel> { ReboquesViewModel(it.reboqueRepository) }
 ) {
-    val e by vm.estado.collectAsStateWithLifecycle()
+    val estadoUi by vm.estadoUi.collectAsStateWithLifecycle()
 
     Box(Modifier.fillMaxSize()) {
-        LazyColumn(
-            Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 100.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            item { CabecalhoTela("Reboques", "Catálogo e preços de venda") }
-            item { CampoBusca(e.busca, vm::aoBuscar, "Buscar por nome") }
-            item {
-                FiltroChips(
-                    opcoes = listOf("Todos") + e.categorias,
-                    selecionado = e.categoria ?: "Todos",
-                    aoSelecionar = { vm.aoSelecionarCategoria(if (it == "Todos") null else it) }
-                )
+        when (val atual = estadoUi) {
+            is UiState.Carregando -> {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = AzulPrimario)
+                }
             }
-            item {
-                Text(
-                    "${e.itens.size} reboques",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodySmall
-                )
+
+            is UiState.Vazio -> {
+                Column(Modifier.fillMaxSize()) {
+                    CabecalhoTela("Reboques", "Catálogo e preços de venda")
+                    MensagemCentral(
+                        texto = stringResource(R.string.lista_vazia),
+                        rotuloBotao = stringResource(R.string.adicionar_primeiro),
+                        aoClicar = vm::novo
+                    )
+                }
             }
-            // key = id: exigência do PRD para o LazyColumn
-            items(e.itens, key = { it.reboque.id }) { item ->
-                CartaoReboque(item, aoClicar = { vm.editar(item) })
+
+            is UiState.Erro -> {
+                Column(Modifier.fillMaxSize()) {
+                    CabecalhoTela("Reboques", "Catálogo e preços de venda")
+                    MensagemCentral(
+                        texto = atual.mensagem,
+                        rotuloBotao = stringResource(R.string.tentar_novamente),
+                        aoClicar = vm::carregar
+                    )
+                }
+            }
+
+            is UiState.Sucesso -> {
+                LazyColumn(
+                    Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 100.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    item { CabecalhoTela("Reboques", "Catálogo e preços de venda") }
+                    item { CampoBusca(vm.buscaAtual, vm::aoBuscar, "Buscar por nome") }
+                    item {
+                        FiltroChips(
+                            opcoes = listOf("Todos") + vm.categoriasLista,
+                            selecionado = vm.categoriaAtual ?: "Todos",
+                            aoSelecionar = { vm.aoSelecionarCategoria(if (it == "Todos") null else it) }
+                        )
+                    }
+                    item {
+                        Text(
+                            "${atual.itens.size} reboques",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                    items(atual.itens, key = { it.reboque.id }) { item ->
+                        CartaoReboque(item, aoClicar = { vm.editar(item) })
+                    }
+                }
             }
         }
 
@@ -183,7 +252,7 @@ fun ReboquesScreen(
             Text("Novo reboque", fontWeight = FontWeight.SemiBold)
         }
 
-        e.formulario?.let { form ->
+        vm.formularioAtual?.let { form ->
             FormularioReboque(
                 form = form,
                 aoMudar = vm::alterar,
@@ -192,7 +261,7 @@ fun ReboquesScreen(
                 aoFechar = vm::fechar
             )
         }
-        SnackbarDeMensagem(e.mensagem, vm::mensagemConsumida)
+        SnackbarDeMensagem(vm.mensagemAtual, vm::mensagemConsumida)
     }
 }
 
@@ -203,7 +272,6 @@ private fun CartaoReboque(item: ReboqueComEstoque, aoClicar: () -> Unit) {
     Cartao(Modifier.fillMaxWidth(), aoClicar = aoClicar) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                // TODO: trocar pelo foto do reboque quando houver upload de imagem
                 Box(
                     Modifier.size(80.dp).clip(RoundedCornerShape(12.dp)).background(AzulSuave),
                     contentAlignment = Alignment.Center
