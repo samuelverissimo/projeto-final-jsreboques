@@ -1,3 +1,7 @@
+// O que faz: Formulário de registro de venda vinculado a Clientes e Reboques com validação de estoque.
+// Por que existe: Implementa a saída de reboques do estoque garantindo que não seja vendido item sem saldo disponível.
+// O que quebra se sumir: O processo de vendas e abatimento automático de estoque deixa de funcionar.
+
 package br.edu.ifpe.jsreboques.ui.venda
 
 import androidx.compose.foundation.background

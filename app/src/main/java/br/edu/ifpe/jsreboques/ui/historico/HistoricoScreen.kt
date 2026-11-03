@@ -1,3 +1,7 @@
+// O que faz: Exibe o histórico unificado de vendas, compras e ajustes de estoque.
+// Por que existe: Gerencia a visualização do histórico de movimentações da loja.
+// O que quebra se sumir: O aplicativo perde a rastreabilidade e a listagem de movimentações.
+
 package br.edu.ifpe.jsreboques.ui.historico
 
 import androidx.compose.foundation.layout.*
@@ -42,6 +46,7 @@ data class HistoricoUiState(
     val totalMesCents: Long = 0
 )
 
+// TODO (João Pedro): Implementar a Atividade 07 (UiState com Carregando, Vazio, Erro e Sucesso)
 class HistoricoViewModel(operacoes: OperacaoRepository) : ViewModel() {
 
     private val filtro = MutableStateFlow<TipoMovimentacao?>(null)

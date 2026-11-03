@@ -1,3 +1,7 @@
+// O que faz: Exibe a lista de clientes cadastrados e permite adicionar e editar contatos.
+// Por que existe: Gerencia a interface de clientes e permite o cadastro de novos contatos.
+// O que quebra se sumir: O aplicativo perde a visualização e cadastro de clientes.
+
 package br.edu.ifpe.jsreboques.ui.clientes
 
 import androidx.compose.foundation.background
@@ -63,6 +67,7 @@ data class ClientesUiState(
     val mensagem: String? = null
 )
 
+// TODO (Pedro Henrique): Implementar a Atividade 07 (UiState com Carregando, Vazio, Erro e Sucesso)
 class ClientesViewModel(private val repo: ClienteRepository) : ViewModel() {
 
     private val busca = MutableStateFlow("")
