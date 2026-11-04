@@ -75,6 +75,15 @@ Este documento registra como ferramentas de Inteligência Artificial (Android St
   >    - Adicione uma nova entrada na seção de "Android Studio Bot / Gemini" descrevendo que este prompt foi utilizado para gerar a camada de rede da entidade Cliente, visando padronização DTO/Entity e integração com Retrofit."
 - **O que foi gerado/alterado:** Implementação completa da camada de rede para Clientes (DTO, Mapper, Interface API e RetrofitClient) com suporte a logging e Coroutines.
 
+### 2.7. Correção e Refatoração da Entidade Compra (João Pietro)
+- **Data:** 22/05/2024
+- **Ferramenta:** Assistente de IA no Android Studio
+- **Prompt:** 
+  > "Remover a classe duplicada CompraEntity do arquivo Entities.kt e garantir que a entidade em CompraEntity.kt possua uma ForeignKey vinculada ao ReboqueEntity."
+- **O que foi feito:** 
+  - Limpeza do arquivo `Entities.kt` para remover referências ou classes duplicadas.
+  - Validação e ajuste da `ForeignKey` em `CompraEntity.kt` para assegurar a integridade referencial com a tabela de reboques.
+
 ---
 
 ## 3. Implementação da Entidade Tarefa e Manutenção (João Pedro)
