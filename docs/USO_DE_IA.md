@@ -354,4 +354,64 @@ As cinco classes devem estar anotadas corretamente para serem utilizadas pelo Ro
 
 Não implemente nenhuma outra funcionalidade.
 
-Depois de criar os arquivos, verifique se o projeto continua compilando e corrija somente erros relacionados a essa implementação.
+
+# TERCEIRO PROMPT (ATIVIDADE 07 - OS QUATRO ESTADOS DA TELA):
+
+Agora vamos implementar a tela de listagem de clientes seguindo o padrão de quatro estados de UI.
+
+## Contexto
+
+Implementar a "Atividade 07" para a entidade **Cliente**. O objetivo é integrar o `UiState` ao `ViewModel` e à `Screen` de Clientes, tratando os estados: Carregando, Vazio, Erro e Sucesso.
+
+## Tecnologias
+
+* Jetpack Compose
+* ViewModel
+* StateFlow
+* Sealed Interface para UiState
+
+## Requisitos da Implementação
+
+### 1. UiState Genérico
+
+Certifique-se de que existe uma `sealed interface UiState<out T>` no pacote `br.edu.ifpe.jsreboques.util` com os estados:
+* `Carregando`
+* `Sucesso(val dados: T)`
+* `Erro(val mensagem: String)`
+* `Vazio`
+
+### 2. Componente de Mensagem
+
+Crie um componente reutilizável `MensagemCentral` em `ui.components` que aceite uma mensagem e um booleano `isLoading`. Ele deve centralizar o conteúdo na tela.
+
+### 3. ClientesViewModel
+
+No pacote `br.edu.ifpe.jsreboques.ui.features.clientes`, crie o `ClientesViewModel`:
+* Mantenha um `StateFlow` do tipo `UiState<List<Cliente>>`.
+* Implemente uma função `carregar()` que simule um carregamento (usando `delay`) e atualize o estado.
+* Inicialmente, o estado deve ser `Carregando`.
+
+### 4. ClientesScreen
+
+No pacote `br.edu.ifpe.jsreboques.ui.features.clientes`, crie a `ClientesScreen`:
+* Utilize um bloco `when` para alternar entre os quatro estados baseados no `UiState` do ViewModel.
+* **Carregando**: Exiba o `MensagemCentral` com o indicador de progresso.
+* **Vazio**: Exiba o `MensagemCentral` com uma mensagem informativa.
+* **Erro**: Exiba o `MensagemCentral` com a mensagem de erro.
+* **Sucesso**: Exiba uma `LazyColumn` com a lista de clientes.
+
+### 5. Navegação
+
+* Adicione a rota `CLIENTES` ao `NavTarget`.
+* Adicione a `ClientesScreen` ao `NavGraph`.
+* Na `HomeScreen`, adicione um botão para navegar até a tela de Clientes.
+
+## Restrições
+
+* Não utilize banco de dados real ainda (simule com `delay` e uma lista estática ou vazia no ViewModel).
+* Mantenha o padrão visual do Material 3.
+* Não crie DAOs ou Repositories nesta etapa se ainda não existirem.
+
+## Objetivo
+
+Ao final, ao clicar no botão "Ver Clientes" na tela inicial, o app deve navegar para a lista de clientes, mostrar o estado de carregamento e, em seguida, exibir a lista, a mensagem de vazio ou de erro.
