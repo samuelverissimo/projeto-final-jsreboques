@@ -30,16 +30,16 @@ import androidx.lifecycle.viewModelScope
 import br.edu.ifpe.jsreboques.data.local.entity.FornecedorEntity
 import br.edu.ifpe.jsreboques.data.repository.FornecedorRepository
 import br.edu.ifpe.jsreboques.domain.Resultado
+import br.edu.ifpe.jsreboques.ui.UiState
 import br.edu.ifpe.jsreboques.ui.components.*
 import br.edu.ifpe.jsreboques.ui.theme.AzulClaro
 import br.edu.ifpe.jsreboques.ui.theme.AzulPrimario
 import br.edu.ifpe.jsreboques.ui.theme.AzulSuave
 import br.edu.ifpe.jsreboques.util.iniciais
+import java.io.IOException
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class FormFornecedor(
@@ -52,45 +52,64 @@ data class FormFornecedor(
     val valido get() = nome.isNotBlank() && contato.isNotBlank()
 }
 
-data class FornecedoresUiState(
-    val busca: String = "",
-    val itens: List<FornecedorEntity> = emptyList(),
-    val formulario: FormFornecedor? = null,
-    val mensagem: String? = null
-)
-
-// TODO (João Pietro): Implementar a Atividade 07 (UiState com Carregando, Vazio, Erro e Sucesso)
 class FornecedoresViewModel(private val repo: FornecedorRepository) : ViewModel() {
 
-    private val busca = MutableStateFlow("")
-    private val formulario = MutableStateFlow<FormFornecedor?>(null)
-    private val mensagem = MutableStateFlow<String?>(null)
+    private val _estadoUi = MutableStateFlow<UiState<FornecedorEntity>>(UiState.Carregando)
+    val estadoUi: StateFlow<UiState<FornecedorEntity>> = _estadoUi.asStateFlow()
 
-    val estado: StateFlow<FornecedoresUiState> =
-        combine(repo.observarTodos(), busca, formulario, mensagem) { lista, b, f, m ->
-            FornecedoresUiState(
-                busca = b,
-                itens = lista.filter {
-                    b.isBlank() || it.nome.contains(b, ignoreCase = true) ||
-                            it.contato.contains(b, ignoreCase = true) ||
-                            (it.documento?.contains(b) == true)
-                },
-                formulario = f,
-                mensagem = m
-            )
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), FornecedoresUiState())
+    private val _busca = MutableStateFlow("")
+    val busca: StateFlow<String> = _busca.asStateFlow()
 
-    fun aoBuscar(t: String) { busca.value = t }
-    fun novo() { formulario.value = FormFornecedor() }
-    fun fechar() { formulario.value = null }
-    fun mensagemConsumida() { mensagem.value = null }
+    private val _formulario = MutableStateFlow<FormFornecedor?>(null)
+    val formulario: StateFlow<FormFornecedor?> = _formulario.asStateFlow()
+
+    private val _mensagem = MutableStateFlow<String?>(null)
+    val mensagem: StateFlow<String?> = _mensagem.asStateFlow()
+
+    init {
+        carregar()
+    }
+
+    fun carregar() {
+        _estadoUi.value = UiState.Carregando
+        viewModelScope.launch {
+            try {
+                repo.observarTodos().collect { lista ->
+                    val query = _busca.value
+                    val filtrados = lista.filter {
+                        query.isBlank() || it.nome.contains(query, ignoreCase = true) ||
+                                it.contato.contains(query, ignoreCase = true) ||
+                                (it.documento?.contains(query) == true)
+                    }
+                    if (lista.isEmpty()) {
+                        _estadoUi.value = UiState.Vazio
+                    } else {
+                        _estadoUi.value = UiState.Sucesso(filtrados)
+                    }
+                }
+            } catch (e: IOException) {
+                _estadoUi.value = UiState.Erro("Sem conexão. Verifique a internet e tente novamente.")
+            } catch (e: Exception) {
+                _estadoUi.value = UiState.Erro("Não foi possível carregar os dados.")
+            }
+        }
+    }
+
+    fun aoBuscar(t: String) {
+        _busca.value = t
+        carregar()
+    }
+
+    fun novo() { _formulario.value = FormFornecedor() }
+    fun fechar() { _formulario.value = null }
+    fun mensagemConsumida() { _mensagem.value = null }
 
     fun alterar(f: FormFornecedor) {
-        formulario.value = f
+        _formulario.value = f
     }
 
     fun editar(f: FornecedorEntity) {
-        formulario.value = FormFornecedor(
+        _formulario.value = FormFornecedor(
             id = f.id,
             nome = f.nome,
             contato = f.contato,
@@ -99,9 +118,9 @@ class FornecedoresViewModel(private val repo: FornecedorRepository) : ViewModel(
     }
 
     fun salvar() {
-        val f = formulario.value ?: return
+        val f = _formulario.value ?: return
         if (!f.valido) {
-            formulario.value = f.copy(tentouSalvar = true)
+            _formulario.value = f.copy(tentouSalvar = true)
             return
         }
         val entidade = FornecedorEntity(
@@ -112,8 +131,8 @@ class FornecedoresViewModel(private val repo: FornecedorRepository) : ViewModel(
         )
         viewModelScope.launch {
             when (val r = repo.salvar(entidade)) {
-                is Resultado.Sucesso -> formulario.value = null
-                is Resultado.Falha -> mensagem.value = r.mensagem
+                is Resultado.Sucesso -> _formulario.value = null
+                is Resultado.Falha -> _mensagem.value = r.mensagem
             }
         }
     }
@@ -122,10 +141,10 @@ class FornecedoresViewModel(private val repo: FornecedorRepository) : ViewModel(
         viewModelScope.launch {
             when (val r = repo.excluir(id)) {
                 is Resultado.Sucesso -> {
-                    if (formulario.value?.id == id) formulario.value = null
-                    mensagem.value = "Fornecedor excluído"
+                    if (_formulario.value?.id == id) _formulario.value = null
+                    _mensagem.value = "Fornecedor excluído"
                 }
-                is Resultado.Falha -> mensagem.value = r.mensagem
+                is Resultado.Falha -> _mensagem.value = r.mensagem
             }
         }
     }
@@ -135,43 +154,75 @@ class FornecedoresViewModel(private val repo: FornecedorRepository) : ViewModel(
 fun FornecedoresScreen(
     vm: FornecedoresViewModel = appViewModel<FornecedoresViewModel> { FornecedoresViewModel(it.fornecedorRepository) }
 ) {
-    val e by vm.estado.collectAsStateWithLifecycle()
+    val estadoUi by vm.estadoUi.collectAsStateWithLifecycle()
+    val busca by vm.busca.collectAsStateWithLifecycle()
+    val formulario by vm.formulario.collectAsStateWithLifecycle()
+    val mensagem by vm.mensagem.collectAsStateWithLifecycle()
 
     Box(Modifier.fillMaxSize()) {
-        LazyColumn(
-            Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 100.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            item { CabecalhoTela("Fornecedores", "Parceiros e fornecedores de peças") }
-            item { CampoBusca(e.busca, vm::aoBuscar, "Buscar nome, contato ou documento") }
-            item {
-                Text(
-                    "${e.itens.size} fornecedores cadastrados",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+        Column(Modifier.fillMaxSize()) {
+            CabecalhoTela("Fornecedores", "Parceiros e fornecedores de peças")
+            Box(Modifier.padding(horizontal = 20.dp)) {
+                CampoBusca(busca, vm::aoBuscar, "Buscar nome, contato ou documento")
             }
-            items(e.itens, key = { it.id }) { f ->
-                Cartao(Modifier.fillMaxWidth(), aoClicar = { vm.editar(f) }) {
-                    Row(
-                        modifier = Modifier.padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
+            Spacer(Modifier.height(12.dp))
+
+            when (val atual = estadoUi) {
+                is UiState.Carregando -> {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                }
+                is UiState.Vazio -> {
+                    MensagemCentral(
+                        texto = "Nenhum fornecedor cadastrado.",
+                        rotuloBotao = "Cadastrar fornecedor",
+                        aoClicar = vm::novo
+                    )
+                }
+                is UiState.Erro -> {
+                    MensagemCentral(
+                        texto = atual.mensagem,
+                        rotuloBotao = "Tentar novamente",
+                        aoClicar = vm::carregar
+                    )
+                }
+                is UiState.Sucesso -> {
+                    LazyColumn(
+                        Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 100.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Box(
-                            Modifier.size(44.dp).clip(CircleShape).background(AzulSuave),
-                            contentAlignment = Alignment.Center
-                        ) { Text(f.nome.iniciais(), fontWeight = FontWeight.Bold, color = AzulPrimario) }
-                        Spacer(Modifier.width(12.dp))
-                        Column(Modifier.weight(1f)) {
-                            Text(f.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Text("Contato: ${f.contato}", style = MaterialTheme.typography.bodyMedium)
-                            f.documento?.let { doc ->
-                                if (doc.isNotBlank()) Text("Doc: $doc", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            }
+                        item {
+                            Text(
+                                "${atual.itens.size} fornecedores cadastrados",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
-                        IconButton(onClick = { vm.excluir(f.id) }) {
-                            Icon(Icons.Filled.Delete, contentDescription = "Excluir", tint = MaterialTheme.colorScheme.error)
+                        items(atual.itens, key = { it.id }) { f ->
+                            Cartao(Modifier.fillMaxWidth(), aoClicar = { vm.editar(f) }) {
+                                Row(
+                                    modifier = Modifier.padding(16.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Box(
+                                        Modifier.size(44.dp).clip(CircleShape).background(AzulSuave),
+                                        contentAlignment = Alignment.Center
+                                    ) { Text(f.nome.iniciais(), fontWeight = FontWeight.Bold, color = AzulPrimario) }
+                                    Spacer(Modifier.width(12.dp))
+                                    Column(Modifier.weight(1f)) {
+                                        Text(f.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                                        Text("Contato: ${f.contato}", style = MaterialTheme.typography.bodyMedium)
+                                        f.documento?.let { doc ->
+                                            if (doc.isNotBlank()) Text("Doc: $doc", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                        }
+                                    }
+                                    IconButton(onClick = { vm.excluir(f.id) }) {
+                                        Icon(Icons.Filled.Delete, contentDescription = "Excluir", tint = MaterialTheme.colorScheme.error)
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -189,7 +240,7 @@ fun FornecedoresScreen(
             Text("Novo fornecedor", fontWeight = FontWeight.SemiBold)
         }
 
-        e.formulario?.let { form ->
+        formulario?.let { form ->
             FormularioFornecedor(
                 form = form,
                 aoMudar = vm::alterar,
@@ -197,7 +248,7 @@ fun FornecedoresScreen(
                 aoFechar = vm::fechar
             )
         }
-        SnackbarDeMensagem(e.mensagem, vm::mensagemConsumida)
+        SnackbarDeMensagem(mensagem, vm::mensagemConsumida)
     }
 }
 
