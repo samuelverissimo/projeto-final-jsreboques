@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 
 /**
  * Entidade que representa uma operação de compra de reboques para o estoque.
+ * Refatorado para garantir integridade referencial com ReboqueEntity.
  */
 @Entity(
     tableName = "compras",
