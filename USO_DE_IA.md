@@ -103,6 +103,14 @@ Este documento registra como ferramentas de Inteligência Artificial (Android St
 
 ---
 
-## 4. Diretrizes de Uso da IA
+## 5. Atividade 07 — Os Quatro Estados da Tela (Histórico) (João Pedro)
+- **Prompt:**
+  > "Preciso implementar a Atividade 07 ('Os Quatro Estados da Tela') na tela e ViewModel de Histórico. O projeto já possui a sealed interface UiState (Carregando, Vazio, Erro, Sucesso) e o componente MensagemCentral. O ViewModel deve gerenciar o estado, calcular métricas mensais, tratar IOException para erros de conexão e garantir que a View trate todos os estados de forma exaustiva sem cláusula else."
+- **Resultado:**
+  > Refatoração completa da `HistoricoScreen.kt` e `HistoricoViewModel` seguindo o padrão de estados de UI, garantindo robustez no tratamento de erros e uma interface reativa que informa o status do carregamento ao usuário.
+
+---
+
+## 6. Diretrizes de Uso da IA
 1. Todo o código gerado foi revisado, testado e validado via compilação e testes unitários no Android Studio.
 2. Cada membro da equipe é responsável por registrar seus próprios prompts e contribuições específicas.
