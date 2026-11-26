@@ -2,90 +2,23 @@ package br.edu.ifpe.jsreboques.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import androidx.room.Upsert
 import br.edu.ifpe.jsreboques.data.local.entity.AjusteEstoqueEntity
-import br.edu.ifpe.jsreboques.data.local.entity.ClienteEntity
 import br.edu.ifpe.jsreboques.data.local.entity.CompraEntity
 import br.edu.ifpe.jsreboques.data.local.entity.EstoqueEntity
-import br.edu.ifpe.jsreboques.data.local.entity.ReboqueEntity
-import br.edu.ifpe.jsreboques.data.local.entity.UsuarioEntity
-import br.edu.ifpe.jsreboques.data.local.entity.VendaEntity
-import br.edu.ifpe.jsreboques.data.local.model.AjusteHistorico
-import br.edu.ifpe.jsreboques.data.local.model.CompraHistorico
-import br.edu.ifpe.jsreboques.data.local.model.ReboqueComEstoque
 import br.edu.ifpe.jsreboques.data.local.entity.FornecedorEntity
 import br.edu.ifpe.jsreboques.data.local.entity.ResumoVendas
+import br.edu.ifpe.jsreboques.data.local.entity.TipoAjuste
+import br.edu.ifpe.jsreboques.data.local.entity.VendaEntity
 import br.edu.ifpe.jsreboques.data.local.entity.VendaHistorico
+import br.edu.ifpe.jsreboques.data.local.model.AjusteHistorico
+import br.edu.ifpe.jsreboques.data.local.model.CompraHistorico
 import br.edu.ifpe.jsreboques.domain.EstoqueInsuficienteException
 import br.edu.ifpe.jsreboques.domain.ResultadoMovimento
 import kotlinx.coroutines.flow.Flow
-
-// ---------------------------------------------------------------- REBOQUES (F1)
-@Dao
-abstract class ReboqueDao {
-
-    @Query(
-        """
-        SELECT r.*, COALESCE(e.quantidade, 0) AS quantidade
-        FROM reboques r
-        LEFT JOIN estoques e ON e.reboqueId = r.id
-        ORDER BY r.nome COLLATE NOCASE ASC
-        """
-    )
-    abstract fun observarTodos(): Flow<List<ReboqueComEstoque>>
-
-    @Insert
-    abstract suspend fun inserir(reboque: ReboqueEntity): Long
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract suspend fun inserirEstoque(estoque: EstoqueEntity)
-
-    @Update
-    abstract suspend fun atualizar(reboque: ReboqueEntity)
-
-    @Query("DELETE FROM reboques WHERE id = :id")
-    abstract suspend fun excluir(id: Long)
-
-    /** Cadastra o reboque e já cria o saldo de estoque com 0 unidades. */
-    @Transaction
-    open suspend fun cadastrar(reboque: ReboqueEntity): Long {
-        val id = inserir(reboque)
-        inserirEstoque(EstoqueEntity(reboqueId = id, quantidade = 0))
-        return id
-    }
-}
-
-// ---------------------------------------------------------------- CLIENTES (F5)
-@Dao
-interface ClienteDao {
-
-    @Query("SELECT * FROM clientes ORDER BY nome COLLATE NOCASE ASC")
-    fun observarTodos(): Flow<List<ClienteEntity>>
-
-    @Insert
-    suspend fun inserir(cliente: ClienteEntity): Long
-
-    @Update
-    suspend fun atualizar(cliente: ClienteEntity)
-
-    @Upsert
-    suspend fun sincronizar(clientes: List<ClienteEntity>)
-}
-
-// ---------------------------------------------------------------- USUÁRIOS (F7 - futuro)
-@Dao
-interface UsuarioDao {
-
-    @Query("SELECT * FROM usuarios WHERE username = :username LIMIT 1")
-    suspend fun buscarPorUsername(username: String): UsuarioEntity?
-
-    @Insert
-    suspend fun inserir(usuario: UsuarioEntity): Long
-}
 
 // ---------------------------------------------------------------- FORNECEDORES
 @Dao
@@ -144,8 +77,8 @@ abstract class OperacaoDao {
                 quantidade = quantidade,
                 valorUnitarioCents = valorUnitarioCents,
                 valorTotalCents = valorUnitarioCents * quantidade,
-                estoqueAntes = antes,
-                estoqueDepois = depois
+                saldoAntes = antes,
+                saldoDepois = depois
             )
         )
         salvarEstoque(EstoqueEntity(reboqueId, depois))
@@ -167,8 +100,8 @@ abstract class OperacaoDao {
                 quantidade = quantidade,
                 valorUnitarioCents = valorUnitarioCents,
                 valorTotalCents = valorUnitarioCents * quantidade,
-                estoqueAntes = antes,
-                estoqueDepois = depois
+                saldoAntes = antes,
+                saldoDepois = depois
             )
         )
         salvarEstoque(EstoqueEntity(reboqueId, depois))
@@ -189,10 +122,11 @@ abstract class OperacaoDao {
         val id = inserirAjuste(
             AjusteEstoqueEntity(
                 reboqueId = reboqueId,
+                tipo = if (delta > 0) TipoAjuste.ENTRADA else TipoAjuste.SAIDA,
                 quantidade = delta,
                 motivo = motivo,
-                estoqueAntes = antes,
-                estoqueDepois = depois
+                saldoAntes = antes,
+                saldoDepois = depois
             )
         )
         salvarEstoque(EstoqueEntity(reboqueId, depois))
@@ -213,7 +147,7 @@ abstract class OperacaoDao {
 
     @Query(
         """
-        SELECT v.id, v.quantidade, v.valorTotalCents, v.estoqueAntes, v.estoqueDepois,
+        SELECT v.id, v.quantidade, v.valorTotalCents, v.saldoAntes AS estoqueAntes, v.saldoDepois AS estoqueDepois,
                v.dataHoraTimestamp, r.nome AS reboqueNome, c.nome AS clienteNome
         FROM vendas v
         INNER JOIN reboques r ON r.id = v.reboqueId
@@ -225,8 +159,8 @@ abstract class OperacaoDao {
 
     @Query(
         """
-        SELECT c.id, c.quantidade, c.valorUnitarioCents, c.valorTotalCents, c.estoqueAntes,
-               c.estoqueDepois, c.dataHoraTimestamp, r.nome AS reboqueNome
+        SELECT c.id, c.quantidade, c.valorUnitarioCents, c.valorTotalCents, c.saldoAntes AS estoqueAntes,
+               c.saldoDepois AS estoqueDepois, c.dataHoraTimestamp, r.nome AS reboqueNome
         FROM compras c
         INNER JOIN reboques r ON r.id = c.reboqueId
         ORDER BY c.dataHoraTimestamp DESC
@@ -236,7 +170,7 @@ abstract class OperacaoDao {
 
     @Query(
         """
-        SELECT a.id, a.quantidade, a.motivo, a.estoqueAntes, a.estoqueDepois,
+        SELECT a.id, a.quantidade, a.motivo, a.saldoAntes AS estoqueAntes, a.saldoDepois AS estoqueDepois,
                a.dataHoraTimestamp, r.nome AS reboqueNome
         FROM ajustes_estoque a
         INNER JOIN reboques r ON r.id = a.reboqueId

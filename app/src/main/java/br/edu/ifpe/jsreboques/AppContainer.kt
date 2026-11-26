@@ -15,7 +15,7 @@ import br.edu.ifpe.jsreboques.data.repository.TarefaRepository
  */
 class AppContainer(context: Context) {
 
-    private val db = AppDatabase.getDatabase(context)
+    private val db = AppDatabase.getInstance(context)
 
     val reboqueRepository = ReboqueRepository(db.reboqueDao())
     val clienteRepository = ClienteRepository(db.clienteDao(), RetrofitClient.clienteApi)

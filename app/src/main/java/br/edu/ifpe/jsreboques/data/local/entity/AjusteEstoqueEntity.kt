@@ -5,7 +5,10 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-/** Entrada/saída manual. quantidade > 0 = entrada, quantidade < 0 = saída. */
+enum class TipoAjuste {
+    ENTRADA, SAIDA
+}
+
 @Entity(
     tableName = "ajustes_estoque",
     foreignKeys = [
@@ -13,17 +16,21 @@ import androidx.room.PrimaryKey
             entity = ReboqueEntity::class,
             parentColumns = ["id"],
             childColumns = ["reboqueId"],
-            onDelete = ForeignKey.RESTRICT,
-        ),
+            onDelete = ForeignKey.RESTRICT
+        )
     ],
-    indices = [Index("reboqueId")],
+    indices = [Index("reboqueId")]
 )
 data class AjusteEstoqueEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val reboqueId: Long,
+    val tipo: TipoAjuste,
     val quantidade: Int,
     val motivo: String,
-    val estoqueAntes: Int,
-    val estoqueDepois: Int,
     val dataHoraTimestamp: Long = System.currentTimeMillis(),
-)
+    val saldoAntes: Int,
+    val saldoDepois: Int
+) {
+    val codigoFormatado: String
+        get() = "A-%03d".format(id)
+}

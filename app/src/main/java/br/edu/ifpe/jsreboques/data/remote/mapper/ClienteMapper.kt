@@ -8,7 +8,7 @@ fun ClienteDto.toEntity(): ClienteEntity {
         id = this.id ?: 0L,
         nome = this.nome,
         email = this.email,
-        telefone = this.telefone,
+        whatsapp = this.telefone,
         documento = this.documento
     )
 }
@@ -18,7 +18,7 @@ fun ClienteEntity.toDto(): ClienteDto {
         id = if (this.id == 0L) null else this.id,
         nome = this.nome,
         email = this.email,
-        telefone = this.telefone,
+        telefone = this.whatsapp,
         documento = this.documento
     )
 }

@@ -30,24 +30,10 @@ data class VendaEntity(
     val quantidade: Int,
     val valorUnitarioCents: Long,
     val valorTotalCents: Long,
-    val estoqueAntes: Int = 0,
-    val estoqueDepois: Int = 0,
-    val dataHoraTimestamp: Long = System.currentTimeMillis()
-)
-
-data class ResumoVendas(
-    val totalCents: Long,
-    val vendas: Int,
-    val unidades: Int
-)
-
-data class VendaHistorico(
-    val id: Long,
-    val quantidade: Int,
-    val valorTotalCents: Long,
-    val estoqueAntes: Int,
-    val estoqueDepois: Int,
-    val dataHoraTimestamp: Long,
-    val reboqueNome: String,
-    val clienteNome: String
-)
+    val dataHoraTimestamp: Long = System.currentTimeMillis(),
+    val saldoAntes: Int,
+    val saldoDepois: Int
+) {
+    val codigoFormatado: String
+        get() = "V-%03d".format(id)
+}

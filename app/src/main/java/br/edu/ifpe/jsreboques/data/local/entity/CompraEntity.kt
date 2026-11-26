@@ -5,9 +5,6 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-/**
- * Entidade que representa uma operação de compra de reboques para o estoque.
- */
 @Entity(
     tableName = "compras",
     foreignKeys = [
@@ -26,7 +23,10 @@ data class CompraEntity(
     val quantidade: Int,
     val valorUnitarioCents: Long,
     val valorTotalCents: Long,
-    val estoqueAntes: Int = 0,
-    val estoqueDepois: Int = 0,
-    val dataHoraTimestamp: Long = System.currentTimeMillis()
-)
+    val dataHoraTimestamp: Long = System.currentTimeMillis(),
+    val saldoAntes: Int,
+    val saldoDepois: Int
+) {
+    val codigoFormatado: String
+        get() = "C-%03d".format(id)
+}
