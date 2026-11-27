@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Paleta Identidade JS Reboques -->
+    <color name="primary">#FFC107</color> <!-- Amber/Amarelo -->
+    <color name="primary_variant">#FFA000</color>
+    <color name="secondary">#212121</color> <!-- Dark Grey/Black -->
+
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -7,6 +12,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="error">#B00020</color>
     <color name="brand_azul_primario">#213D5E</color>
     <color name="brand_azul_claro">#BEDEFF</color>
 </resources>
